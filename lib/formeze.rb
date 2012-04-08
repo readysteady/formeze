@@ -140,6 +140,22 @@ module Formeze
     def guard(&block)
       fields << block
     end
+
+    def checks
+      @checks ||= []
+    end
+
+    def check(&block)
+      checks << block
+    end
+
+    def errors
+      @errors ||= []
+    end
+
+    def error(message)
+      errors << message
+    end
   end
 
   class KeyError < StandardError; end
@@ -179,6 +195,10 @@ module Formeze
       end
 
       raise KeyError unless form_data.empty?
+
+      self.class.checks.zip(self.class.errors) do |check, error|
+        instance_eval(&check) ? next : errors << UserError.new(error)
+      end
     end
 
     def errors

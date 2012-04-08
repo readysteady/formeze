@@ -329,3 +329,25 @@ describe 'FormWithGuard after parsing input with same_address set and no billing
     end
   end
 end
+
+class FormWithCustomValidation
+  Formeze.setup(self)
+
+  field :email
+
+  check { email.include?(?@) }
+  error 'Email is invalid'
+end
+
+describe 'FormWithCustomValidation after parsing invalid input' do
+  before do
+    @form = FormWithCustomValidation.new
+    @form.parse('email=alice')
+  end
+
+  describe 'valid query method' do
+    it 'should return false' do
+      @form.valid?.must_equal(false)
+    end
+  end
+end
