@@ -36,6 +36,10 @@ module Formeze
       @key ||= @name.to_s
     end
 
+    def key_required?
+      @options.fetch(:key_required) { true }
+    end
+
     def label
       @label ||= @options.fetch(:label) { Label.new(name) }
     end
@@ -174,7 +178,7 @@ module Formeze
         end
 
         unless form_data.has_key?(field.key)
-          next if field.multiple?
+          next if field.multiple? || !field.key_required?
 
           raise KeyError
         end

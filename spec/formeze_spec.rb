@@ -351,3 +351,22 @@ describe 'FormWithCustomValidation after parsing invalid input' do
     end
   end
 end
+
+class FormWithOptionalKey
+  Formeze.setup(self)
+
+  field :accept_terms, values: %w(true), key_required: false
+end
+
+describe 'FormWithOptionalKey after parsing input without the key' do
+  before do
+    @form = FormWithOptionalKey.new
+    @form.parse('')
+  end
+
+  describe 'valid query method' do
+    it 'should return true' do
+      @form.valid?.must_equal(true)
+    end
+  end
+end
