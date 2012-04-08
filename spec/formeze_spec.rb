@@ -370,3 +370,30 @@ describe 'FormWithOptionalKey after parsing input without the key' do
     end
   end
 end
+
+Rails = Object.new
+
+class RailsForm
+  Formeze.setup(self)
+
+  field :title
+end
+
+describe 'RailsForm' do
+  before do
+    @form = RailsForm.new
+  end
+
+  describe 'parse method' do
+    it 'should automatically process the utf8 and authenticity_token parameters' do
+      @form.parse('utf8=%E2%9C%93&authenticity_token=5RMc3sPZdR%2BZz4onNS8NfK&title=Test')
+      @form.authenticity_token.wont_be_empty
+      @form.utf8.wont_be_empty
+    end
+
+    it 'should not complain if the utf8 or authenticity_token parameters are missing' do
+      @form.parse('utf8=%E2%9C%93&title=Test')
+      @form.parse('authenticity_token=5RMc3sPZdR%2BZz4onNS8NfK&title=Test')
+    end
+  end
+end

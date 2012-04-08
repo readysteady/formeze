@@ -214,9 +214,19 @@ module Formeze
     end
   end
 
-  def self.setup(klass)
-    klass.send :include, InstanceMethods
+  def self.setup(form)
+    form.send :include, InstanceMethods
 
-    klass.extend ClassMethods
+    form.extend ClassMethods
+
+    if on_rails?
+      form.field(:utf8, key_required: false)
+
+      form.field(:authenticity_token, key_required: false)
+    end
+  end
+
+  def self.on_rails?
+    defined?(Rails)
   end
 end
