@@ -300,3 +300,32 @@ describe 'FormWithFieldThatCanOnlyHaveSpecifiedValues after parsing input with a
     end
   end
 end
+
+class FormWithGuard
+  Formeze.setup(self)
+
+  field :delivery_address
+
+  field :same_address, values: %w(yes no)
+
+  guard { same_address? }
+
+  field :billing_address
+
+  def same_address?
+    same_address == 'yes'
+  end
+end
+
+describe 'FormWithGuard after parsing input with same_address set and no billing address' do
+  before do
+    @form = FormWithGuard.new
+    @form.parse('delivery_address=123+Main+St&same_address=yes')
+  end
+
+  describe 'valid query method' do
+    it 'should return true' do
+      @form.valid?.must_equal(true)
+    end
+  end
+end

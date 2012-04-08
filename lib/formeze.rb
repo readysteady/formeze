@@ -136,6 +136,10 @@ module Formeze
         attr_accessor field.name
       end
     end
+
+    def guard(&block)
+      fields << block
+    end
   end
 
   class KeyError < StandardError; end
@@ -149,6 +153,10 @@ module Formeze
       form_data = CGI.parse(encoded_form_data)
 
       self.class.fields.each do |field|
+        unless field.respond_to?(:key)
+          instance_eval(&field) ? return : next
+        end
+
         unless form_data.has_key?(field.key)
           next if field.multiple?
 
