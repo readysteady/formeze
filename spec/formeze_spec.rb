@@ -77,6 +77,14 @@ describe 'FormWithField after parsing blank input' do
       @form.valid?.must_equal(false)
     end
   end
+
+  describe 'errors method' do
+    it 'should return an array containing an error message' do
+      @form.errors.must_be_instance_of(Array)
+      @form.errors.length.must_equal(1)
+      @form.errors.first.to_s.must_equal('Title is required')
+    end
+  end
 end
 
 describe 'FormWithField after parsing input containing newlines' do
