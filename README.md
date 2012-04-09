@@ -1,5 +1,5 @@
-Formeze: A little library for defining classes to handle form data/input
-========================================================================
+Formeze: A little library for handling form data/input
+======================================================
 
 
 Motivation
