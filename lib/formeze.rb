@@ -19,17 +19,19 @@ module Formeze
     end
 
     def validate(value, &error)
-      error.call(:'is required') if required? && value !~ /\S/
+      if value !~ /\S/ # blank
+        error.call(:'is required') if required?
+      else
+        error.call(:'has too many lines') if !multiline? && value.lines.count > 1
 
-      error.call(:'has too many lines') if !multiline? && value.lines.count > 1
+        error.call(:'has too many characters') if value.chars.count > char_limit
 
-      error.call(:'has too many characters') if value.chars.count > char_limit
+        error.call(:'has too many words') if word_limit? && value.scan(/\w+/).length > word_limit
 
-      error.call(:'has too many words') if word_limit? && value.scan(/\w+/).length > word_limit
+        error.call(:'is invalid') if pattern? && value !~ pattern
 
-      error.call(:'is invalid') if pattern? && value !~ pattern
-
-      error.call(:'is invalid') if values? && !values.include?(value)
+        error.call(:'is invalid') if values? && !values.include?(value)
+      end
     end
 
     def key

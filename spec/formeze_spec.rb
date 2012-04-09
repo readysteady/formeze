@@ -418,6 +418,25 @@ describe 'FormWithOptionalKey after parsing input without the key' do
   end
 end
 
+class FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues
+  Formeze.setup(self)
+
+  field :size, required: false, values: %w(S M L XL)
+end
+
+describe 'FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues after parsing blank input' do
+  before do
+    @form = FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues.new
+    @form.parse('size=')
+  end
+
+  describe 'valid query method' do
+    it 'should return true' do
+      @form.valid?.must_equal(true)
+    end
+  end
+end
+
 Rails = Object.new
 
 class RailsForm
