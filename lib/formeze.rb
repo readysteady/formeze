@@ -202,7 +202,7 @@ module Formeze
         unless form_data.has_key?(field.key)
           next if field.multiple? || !field.key_required?
 
-          raise KeyError
+          raise KeyError, "missing form key: #{field.key}"
         end
 
         values = form_data.delete(field.key)
