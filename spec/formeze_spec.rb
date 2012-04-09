@@ -301,14 +301,53 @@ describe 'FormWithFieldThatCanOnlyHaveSpecifiedValues after parsing input with a
   end
 end
 
-class FormWithGuard
+class FormWithGuardCondition
+  Formeze.setup(self)
+
+  field :account_name
+
+  guard { @business_account }
+
+  field :account_vat_number
+
+  def initialize(business_account)
+    @business_account = business_account
+  end
+end
+
+describe 'FormWithGuardCondition with business_account set to true' do
+  before do
+    @form = FormWithGuardCondition.new(true)
+  end
+
+  describe 'parse method' do
+    it 'should raise an exception when the account_vat_number key is missing' do
+      proc { @form.parse('account_name=Something') }.must_raise(Formeze::KeyError)
+    end
+  end
+end
+
+describe 'FormWithGuardCondition with business_account set to false after parsing valid input' do
+  before do
+    @form = FormWithGuardCondition.new(false)
+    @form.parse('account_name=Something')
+  end
+
+  describe 'valid query method' do
+    it 'should return true' do
+      @form.valid?.must_equal(true)
+    end
+  end
+end
+
+class FormWithHaltingCondition
   Formeze.setup(self)
 
   field :delivery_address
 
   field :same_address, values: %w(yes no)
 
-  guard { same_address? }
+  halts { same_address? }
 
   field :billing_address
 
@@ -317,9 +356,9 @@ class FormWithGuard
   end
 end
 
-describe 'FormWithGuard after parsing input with same_address set and no billing address' do
+describe 'FormWithHaltingCondition after parsing input with same_address set and no billing address' do
   before do
-    @form = FormWithGuard.new
+    @form = FormWithHaltingCondition.new
     @form.parse('delivery_address=123+Main+St&same_address=yes')
   end
 

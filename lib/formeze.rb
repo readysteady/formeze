@@ -85,6 +85,22 @@ module Formeze
     end
   end
 
+  class GuardCondition
+    attr_reader :block
+
+    def initialize(block)
+      @block = block
+    end
+  end
+
+  class HaltingCondition
+    attr_reader :block
+
+    def initialize(block)
+      @block = block
+    end
+  end
+
   module ArrayAttrAccessor
     def array_attr_reader(name)
       define_method(name) do
@@ -142,7 +158,11 @@ module Formeze
     end
 
     def guard(&block)
-      fields << block
+      fields << GuardCondition.new(block)
+    end
+
+    def halts(&block)
+      fields << HaltingCondition.new(block)
     end
 
     def checks
@@ -173,8 +193,10 @@ module Formeze
       form_data = CGI.parse(encoded_form_data)
 
       self.class.fields.each do |field|
-        unless field.respond_to?(:key)
-          instance_eval(&field) ? return : next
+        if field.is_a?(GuardCondition)
+          instance_eval(&field.block) ? next : return
+        elsif field.is_a?(HaltingCondition)
+          instance_eval(&field.block) ? return : next
         end
 
         unless form_data.has_key?(field.key)
