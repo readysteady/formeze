@@ -196,9 +196,9 @@ module Formeze
 
       self.class.fields.each do |field|
         if field.is_a?(GuardCondition)
-          instance_eval(&field.block) ? next : return
+          instance_eval(&field.block) ? next : break
         elsif field.is_a?(HaltingCondition)
-          instance_eval(&field.block) ? return : next
+          instance_eval(&field.block) ? break : next
         end
 
         unless form_data.has_key?(field.key)

@@ -323,6 +323,18 @@ class FormWithGuardCondition
   end
 end
 
+describe 'FormWithGuardCondition' do
+  before do
+    @form = FormWithGuardCondition.new(false)
+  end
+
+  describe 'parse method' do
+    it 'should raise an exception when there is an unexpected key' do
+      proc { @form.parse('account_name=Something&foo=bar') }.must_raise(Formeze::KeyError)
+    end
+  end
+end
+
 describe 'FormWithGuardCondition with business_account set to true' do
   before do
     @form = FormWithGuardCondition.new(true)
@@ -361,6 +373,18 @@ class FormWithHaltingCondition
 
   def same_address?
     same_address == 'yes'
+  end
+end
+
+describe 'FormWithHaltingCondition' do
+  before do
+    @form = FormWithHaltingCondition.new
+  end
+
+  describe 'parse method' do
+    it 'should raise an exception when there is an unexpected key' do
+      proc { @form.parse('delivery_address=123+Main+St&same_address=yes&foo=bar') }.must_raise(Formeze::KeyError)
+    end
   end
 end
 
