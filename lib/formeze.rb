@@ -85,21 +85,21 @@ module Formeze
     def values
       @options.fetch(:values)
     end
-  end
 
-  class GuardCondition
-    attr_reader :block
-
-    def initialize(block)
-      @block = block
+    def defined_if?
+      @options.has_key?(:defined_if)
     end
-  end
 
-  class HaltingCondition
-    attr_reader :block
+    def defined_if
+      @options.fetch(:defined_if)
+    end
 
-    def initialize(block)
-      @block = block
+    def defined_unless?
+      @options.has_key?(:defined_unless)
+    end
+
+    def defined_unless
+      @options.fetch(:defined_unless)
     end
   end
 
@@ -159,14 +159,6 @@ module Formeze
       end
     end
 
-    def guard(&block)
-      fields << GuardCondition.new(block)
-    end
-
-    def halts(&block)
-      fields << HaltingCondition.new(block)
-    end
-
     def checks
       @checks ||= []
     end
@@ -195,11 +187,7 @@ module Formeze
       form_data = CGI.parse(encoded_form_data)
 
       self.class.fields.each do |field|
-        if field.is_a?(GuardCondition)
-          instance_eval(&field.block) ? next : break
-        elsif field.is_a?(HaltingCondition)
-          instance_eval(&field.block) ? break : next
-        end
+        next unless field_defined?(field)
 
         unless form_data.has_key?(field.key)
           next if field.multiple? || !field.key_required?
@@ -226,6 +214,16 @@ module Formeze
 
       self.class.checks.zip(self.class.errors) do |check, error|
         instance_eval(&check) ? next : errors << UserError.new(error)
+      end
+    end
+
+    def field_defined?(field)
+      if field.defined_if?
+        instance_eval(&field.defined_if)
+      elsif field.defined_unless?
+        !instance_eval(&field.defined_unless)
+      else
+        true
       end
     end
 

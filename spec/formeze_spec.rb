@@ -313,24 +313,21 @@ class FormWithGuardCondition
   Formeze.setup(self)
 
   field :account_name
-
-  guard { @business_account }
-
-  field :account_vat_number
+  field :account_vat_number, defined_if: proc { @business_account }
 
   def initialize(business_account)
     @business_account = business_account
   end
 end
 
-describe 'FormWithGuardCondition' do
+describe 'FormWithGuardCondition with business_account set to false' do
   before do
     @form = FormWithGuardCondition.new(false)
   end
 
   describe 'parse method' do
-    it 'should raise an exception when there is an unexpected key' do
-      proc { @form.parse('account_name=Something&foo=bar') }.must_raise(Formeze::KeyError)
+    it 'should raise an exception when the account_vat_number is present' do
+      proc { @form.parse('account_name=Something&account_vat_number=123456789') }.must_raise(Formeze::KeyError)
     end
   end
 end
@@ -364,12 +361,8 @@ class FormWithHaltingCondition
   Formeze.setup(self)
 
   field :delivery_address
-
   field :same_address, values: %w(yes no)
-
-  halts { same_address? }
-
-  field :billing_address
+  field :billing_address, defined_unless: :same_address?
 
   def same_address?
     same_address == 'yes'
