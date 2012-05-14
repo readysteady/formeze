@@ -122,6 +122,34 @@ field :colour, multiple: true, values: Colour.keys
 Unlike all the other examples so far, reading the attribute that corresponds
 to this field will return an array of strings instead of a single string.
 
+Sometimes you'll only want the field to be defined if some condition is true.
+The condition may depend on the state of other form fields, or some external
+state accessible from the form object. You can do this by specifying either
+the `defined_if` or `defined_unless` options with a proc. Here's an example
+of using the defined_if option:
+
+```ruby
+field :business_name, defined_if: proc { @account.business? }
+```
+
+In this example the `business_name` field will only be defined and validated
+for business accounts. The proc is evaluated in the context of the form object,
+so has full access to instance variables and methods defined on the object.
+Here's an example of using the defined_unless option:
+
+```ruby
+field :same_address, values: %w(true), key_required: false
+
+field :billing_address_line_one, defined_unless: proc { same_address? }
+
+def same_address?
+  same_address == 'true'
+end
+```
+
+In this example, the `billing_address_line_one` field will only be defined
+and validated if the `same_address` checkbox is checked.
+
 
 Rails usage
 -----------
