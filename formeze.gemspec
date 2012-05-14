@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'formeze'
-  s.version = '1.1.3'
+  s.version = '1.2.0'
   s.platform = Gem::Platform::RUBY
   s.authors = ['Tim Craft']
   s.email = ['mail@timcraft.com']
