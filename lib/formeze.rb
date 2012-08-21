@@ -45,11 +45,7 @@ module Formeze
     end
 
     def label
-      if @options.has_key?(:label)
-        @options[:label]
-      else
-        translate(name, scope: [:formeze, :labels], default: Label.new(name))
-      end
+      @options.fetch(:label) { translate(name, scope: [:formeze, :labels], default: Label.new(name)) }
     end
 
     def required?
