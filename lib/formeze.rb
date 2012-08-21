@@ -19,7 +19,7 @@ module Formeze
     end
 
     def validate(value, &block)
-      if value !~ /\S/ # blank
+      if blank?(value)
         block.call(error(:required, 'is required')) if required?
       else
         block.call(error(:not_multiline, 'cannot contain newlines')) if !multiline? && value.lines.count > 1
@@ -78,6 +78,10 @@ module Formeze
 
     def no_match?(value)
       @options.has_key?(:pattern) && value !~ @options[:pattern]
+    end
+
+    def blank?(value)
+      value !~ /\S/
     end
 
     def values?
