@@ -18,17 +18,17 @@ module Formeze
       @name, @options = name, options
     end
 
-    def validate(value, &block)
+    def validate(value)
       if blank?(value)
-        block.call(error(:required, 'is required')) if required?
+        yield error(:required, 'is required') if required?
       else
-        block.call(error(:not_multiline, 'cannot contain newlines')) if !multiline? && value.lines.count > 1
+        yield error(:not_multiline, 'cannot contain newlines') if !multiline? && value.lines.count > 1
 
-        block.call(error(:too_long, 'is too long')) if too_long?(value)
+        yield error(:too_long, 'is too long') if too_long?(value)
 
-        block.call(error(:no_match, 'is invalid')) if no_match?(value)
+        yield error(:no_match, 'is invalid') if no_match?(value)
 
-        block.call(error(:bad_value, 'is invalid')) if values? && !values.include?(value)
+        yield error(:bad_value, 'is invalid') if values? && !values.include?(value)
       end
     end
 
