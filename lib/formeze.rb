@@ -26,7 +26,7 @@ module Formeze
 
         block.call(error(:too_long, 'is too long')) if too_many_characters?(value)
 
-        block.call(error(:too_long, 'is too long')) if word_limit? && value.scan(/\w+/).length > word_limit
+        block.call(error(:too_long, 'is too long')) if too_many_words?(value)
 
         block.call(error(:no_match, 'is invalid')) if pattern? && value !~ pattern
 
@@ -70,12 +70,8 @@ module Formeze
       value.chars.count > @options.fetch(:char_limit) { 64 }
     end
 
-    def word_limit?
-      @options.has_key?(:word_limit)
-    end
-
-    def word_limit
-      @options.fetch(:word_limit)
+    def too_many_words?(value)
+      @options.has_key?(:word_limit) && value.scan(/\w+/).length > @options[:word_limit]
     end
 
     def pattern?
