@@ -507,3 +507,22 @@ describe 'I18n integration' do
     form.errors.first.to_s.must_equal('TITLE is required')
   end
 end
+
+class FormWithScrubbedFields
+  Formeze.setup(self)
+
+  field :postcode, scrub: [:strip, :squeeze, :upcase], pattern: /\A[A-Z0-9]{2,4} [A-Z0-9]{3}\z/
+  field :bio, scrub: [:strip, :squeeze_lines], multiline: true
+end
+
+describe 'FormWithScrubbedFields' do
+  describe 'parse method' do
+    it 'should apply the scrub methods to the input before validation' do
+      form = FormWithScrubbedFields.new
+      form.parse('postcode=++sw1a+++1aa&bio=My+name+is+Cookie+Monster.%0A%0A%0A%0AI+LOVE+COOKIES!!!!%0A%0A%0A%0A')
+      form.postcode.must_equal('SW1A 1AA')
+      form.bio.count(?\n).must_equal(2)
+      form.valid?.must_equal(true)
+    end
+  end
+end

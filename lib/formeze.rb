@@ -18,6 +18,12 @@ module Formeze
       @name, @options = name, options
     end
 
+    def scrub(value)
+      Array(@options[:scrub]).inject(value) do |tmp, scrub_method|
+        Formeze.scrub_methods.fetch(scrub_method).call(tmp)
+      end
+    end
+
     def validate(value)
       if blank?(value)
         yield error(:required, 'is required') if required?
@@ -212,11 +218,13 @@ module Formeze
         end
 
         values.each do |value|
-          field.validate(value) do |error|
+          scrubbed_value = field.scrub(value)
+
+          field.validate(scrubbed_value) do |error|
             errors << UserError.new("#{field.label} #{error}")
           end
 
-          send(:"#{field.name}=", value)
+          send(:"#{field.name}=", scrubbed_value)
         end
       end
 
@@ -244,6 +252,16 @@ module Formeze
     def valid?
       errors.empty?
     end
+  end
+
+  def self.scrub_methods
+    @scrub_methods ||= {
+      :strip => :strip.to_proc,
+      :upcase => :upcase.to_proc,
+      :downcase => :downcase.to_proc,
+      :squeeze => proc { |string| string.squeeze(' ') },
+      :squeeze_lines => proc { |string| string.gsub(/(\r?\n)(\r?\n)(\r?\n)+/, '\\1\\2') }
+    }
   end
 
   def self.setup(form)
