@@ -24,7 +24,7 @@ module Formeze
       else
         block.call(error(:not_multiline, 'cannot contain newlines')) if !multiline? && value.lines.count > 1
 
-        block.call(error(:too_long, 'is too long')) if value.chars.count > char_limit
+        block.call(error(:too_long, 'is too long')) if too_many_characters?(value)
 
         block.call(error(:too_long, 'is too long')) if word_limit? && value.scan(/\w+/).length > word_limit
 
@@ -66,8 +66,8 @@ module Formeze
       @options.fetch(:multiple) { false }
     end
 
-    def char_limit
-      @options.fetch(:char_limit) { 64 }
+    def too_many_characters?(value)
+      value.chars.count > @options.fetch(:char_limit) { 64 }
     end
 
     def word_limit?
