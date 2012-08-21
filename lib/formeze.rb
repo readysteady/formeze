@@ -35,11 +35,7 @@ module Formeze
     end
 
     def error(i18n_key, default)
-      if defined?(I18n)
-        I18n.translate(i18n_key, scope: [:formeze, :errors], default: default)
-      else
-        default
-      end
+      translate(i18n_key, scope: [:formeze, :errors], default: default)
     end
 
     def key
@@ -51,7 +47,11 @@ module Formeze
     end
 
     def label
-      @label ||= @options.fetch(:label) { Label.new(name) }
+      if @options.has_key?(:label)
+        @options[:label]
+      else
+        translate(name, scope: [:formeze, :labels], default: Label.new(name))
+      end
     end
 
     def required?
@@ -108,6 +108,14 @@ module Formeze
 
     def defined_unless
       @options.fetch(:defined_unless)
+    end
+
+    def translate(key, options)
+      if defined?(I18n)
+        I18n.translate(key, options)
+      else
+        options.fetch(:default)
+      end
     end
   end
 

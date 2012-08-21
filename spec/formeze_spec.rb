@@ -483,14 +483,27 @@ describe 'RailsForm' do
 end
 
 describe 'I18n integration' do
-  it 'should be possible to override the default error messages' do
+  before do
     I18n.backend = I18n::Backend::Simple.new
+  end
+
+  after do
+    I18n.backend = I18n::Backend::Simple.new
+  end
+
+  it 'should be possible to override the default error messages' do
     I18n.backend.store_translations :en, {formeze: {errors: {required: 'cannot be blank'}}}
 
     form = FormWithField.new
     form.parse('title=')
     form.errors.first.to_s.must_equal('Title cannot be blank')
+  end
 
-    I18n.backend = I18n::Backend::Simple.new
+  it 'should be possible to set labels globally' do
+    I18n.backend.store_translations :en, {formeze: {labels: {title: 'TITLE'}}}
+
+    form = FormWithField.new
+    form.parse('title=')
+    form.errors.first.to_s.must_equal('TITLE is required')
   end
 end
