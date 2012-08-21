@@ -169,3 +169,36 @@ end
 
 Formeze will automatically define optional "utf8" and "authenticity_token"
 fields on every form so that you don't have to specify those manually.
+
+
+Integration with I18n
+---------------------
+
+Formeze integrates with [I18n](http://edgeguides.rubyonrails.org/i18n.html)
+so that you can define custom error messages and field labels within your
+locales (useful both for localization, and when working with designers).
+
+For example, here is how you would change the "required" error message
+(which defaults to "is required"):
+
+```yaml
+# config/locales/en.yml
+en:
+  formeze:
+    errors:
+      required: "cannot be blank"
+```
+
+And here is an example of how you would set a custom label for fields named
+"first_name" (for which the default label would be "First name"):
+
+```yaml
+# config/locales/en.yml
+en:
+  formeze:
+    labels:
+      first_name: "First Name"
+```
+
+Labels defined in this way apply globally to all Formeze forms, but can be
+overridden using the label field option which will take precedence.
