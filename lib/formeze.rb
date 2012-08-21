@@ -26,7 +26,7 @@ module Formeze
 
         block.call(error(:too_long, 'is too long')) if too_long?(value)
 
-        block.call(error(:no_match, 'is invalid')) if pattern? && value !~ pattern
+        block.call(error(:no_match, 'is invalid')) if no_match?(value)
 
         block.call(error(:bad_value, 'is invalid')) if values? && !values.include?(value)
       end
@@ -76,12 +76,8 @@ module Formeze
       @options.has_key?(:word_limit) && value.scan(/\w+/).length > @options[:word_limit]
     end
 
-    def pattern?
-      @options.has_key?(:pattern)
-    end
-
-    def pattern
-      @options.fetch(:pattern)
+    def no_match?(value)
+      @options.has_key?(:pattern) && value !~ @options[:pattern]
     end
 
     def values?
