@@ -18,19 +18,27 @@ module Formeze
       @name, @options = name, options
     end
 
-    def validate(value, &error)
+    def validate(value, &block)
       if value !~ /\S/ # blank
-        error.call(:'is required') if required?
+        block.call(error(:required, 'is required')) if required?
       else
-        error.call(:'has too many lines') if !multiline? && value.lines.count > 1
+        block.call(error(:not_multiline, 'cannot contain newlines')) if !multiline? && value.lines.count > 1
 
-        error.call(:'has too many characters') if value.chars.count > char_limit
+        block.call(error(:too_long, 'is too long')) if value.chars.count > char_limit
 
-        error.call(:'has too many words') if word_limit? && value.scan(/\w+/).length > word_limit
+        block.call(error(:too_long, 'is too long')) if word_limit? && value.scan(/\w+/).length > word_limit
 
-        error.call(:'is invalid') if pattern? && value !~ pattern
+        block.call(error(:no_match, 'is invalid')) if pattern? && value !~ pattern
 
-        error.call(:'is invalid') if values? && !values.include?(value)
+        block.call(error(:bad_value, 'is invalid')) if values? && !values.include?(value)
+      end
+    end
+
+    def error(i18n_key, default)
+      if defined?(I18n)
+        I18n.translate(i18n_key, scope: [:formeze, :errors], default: default)
+      else
+        default
       end
     end
 

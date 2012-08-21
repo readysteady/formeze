@@ -8,5 +8,6 @@ Gem::Specification.new do |s|
   s.description = 'A little library for handling form data/input'
   s.summary = 'See description'
   s.files = Dir.glob('{lib,spec}/**/*') + %w(README.md Rakefile.rb formeze.gemspec)
+  s.add_development_dependency('i18n', ['~> 0.6.0'])
   s.require_path = 'lib'
 end

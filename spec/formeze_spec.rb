@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 
-require 'formeze'
+require_relative '../lib/formeze'
+require 'i18n'
 
 class FormWithField
   Formeze.setup(self)
@@ -478,5 +479,18 @@ describe 'RailsForm' do
       @form.parse('utf8=%E2%9C%93&title=Test')
       @form.parse('authenticity_token=5RMc3sPZdR%2BZz4onNS8NfK&title=Test')
     end
+  end
+end
+
+describe 'I18n integration' do
+  it 'should be possible to override the default error messages' do
+    I18n.backend = I18n::Backend::Simple.new
+    I18n.backend.store_translations :en, {formeze: {errors: {required: 'cannot be blank'}}}
+
+    form = FormWithField.new
+    form.parse('title=')
+    form.errors.first.to_s.must_equal('Title cannot be blank')
+
+    I18n.backend = I18n::Backend::Simple.new
   end
 end
