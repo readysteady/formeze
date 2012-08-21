@@ -150,6 +150,22 @@ end
 In this example, the `billing_address_line_one` field will only be defined
 and validated if the `same_address` checkbox is checked.
 
+Validation errors can be a frustrating experience for end users, so ideally
+we want to [be liberal in what we accept](http://en.wikipedia.org/wiki/Jon_Postel#Postel.27s_Law),
+but at the same time ensuring that data is consistently formatted to make it
+easy for us to process. Meet the `scrub` option, which can be used to specify
+methods for "cleaning" input data before validation. For example:
+
+```ruby
+field :postcode, scrub: [:strip, :squeeze, :upcase]
+```
+
+The input for this field will have leading/trailing whitespace stripped,
+double (or more) spaces squeezed, and the result upcased automatically.
+
+In order to define a custom scrub method just add a symbol/proc entry to
+the `Formeze.scrub_methods` hash.
+
 
 Rails usage
 -----------
