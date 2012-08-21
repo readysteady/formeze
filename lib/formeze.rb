@@ -24,9 +24,7 @@ module Formeze
       else
         block.call(error(:not_multiline, 'cannot contain newlines')) if !multiline? && value.lines.count > 1
 
-        block.call(error(:too_long, 'is too long')) if too_many_characters?(value)
-
-        block.call(error(:too_long, 'is too long')) if too_many_words?(value)
+        block.call(error(:too_long, 'is too long')) if too_long?(value)
 
         block.call(error(:no_match, 'is invalid')) if pattern? && value !~ pattern
 
@@ -64,6 +62,10 @@ module Formeze
 
     def multiple?
       @options.fetch(:multiple) { false }
+    end
+
+    def too_long?(value)
+      too_many_characters?(value) || too_many_words?(value)
     end
 
     def too_many_characters?(value)
