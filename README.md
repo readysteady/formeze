@@ -93,7 +93,7 @@ well defined formats, like numbers. For example:
 ```ruby
 field :number, pattern: /\A[1-9]\d*\z/
 
-field :card_security_code, char_limit: 5, value: /\A\d+\z/
+field :card_security_code, char_limit: 5, pattern: /\A\d+\z/
 ```
 
 If you want to validate that the field value belongs to a set of predefined
