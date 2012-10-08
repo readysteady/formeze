@@ -19,9 +19,7 @@ module Formeze
     end
 
     def scrub(value)
-      Array(@options[:scrub]).inject(value) do |tmp, scrub_method|
-        Formeze.scrub_methods.fetch(scrub_method).call(tmp)
-      end
+      Formeze.scrub(value, @options[:scrub])
     end
 
     def validate(value)
@@ -266,6 +264,12 @@ module Formeze
       :squeeze => proc { |string| string.squeeze(' ') },
       :squeeze_lines => proc { |string| string.gsub(/(\r?\n)(\r?\n)(\r?\n)+/, '\\1\\2') }
     }
+  end
+
+  def self.scrub(input, method_names)
+    Array(method_names).inject(input) do |tmp, method_name|
+      scrub_methods.fetch(method_name).call(tmp)
+    end
   end
 
   def self.setup(form)

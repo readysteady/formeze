@@ -538,3 +538,11 @@ describe 'FormWithScrubbedFields' do
     end
   end
 end
+
+describe 'Formeze' do
+  describe 'scrub module method' do
+    it 'should apply the scrub methods to the given input' do
+      Formeze.scrub("word\n\n", [:strip, :upcase]).must_equal('WORD')
+    end
+  end
+end
