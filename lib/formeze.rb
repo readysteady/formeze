@@ -249,6 +249,10 @@ module Formeze
       @errors ||= []
     end
 
+    def errors?
+      errors.size > 0
+    end
+
     def valid?
       errors.empty?
     end

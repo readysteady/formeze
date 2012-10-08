@@ -59,6 +59,12 @@ describe 'FormWithField after parsing valid input' do
     end
   end
 
+  describe 'errors query method' do
+    it 'should return false' do
+      @form.errors?.must_equal(false)
+    end
+  end
+
   describe 'errors method' do
     it 'should return an empty array' do
       @form.errors.must_be_instance_of(Array)
@@ -76,6 +82,12 @@ describe 'FormWithField after parsing blank input' do
   describe 'valid query method' do
     it 'should return false' do
       @form.valid?.must_equal(false)
+    end
+  end
+
+  describe 'errors query method' do
+    it 'should return true' do
+      @form.errors?.must_equal(true)
     end
   end
 
