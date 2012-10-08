@@ -187,6 +187,24 @@ Formeze will automatically define optional "utf8" and "authenticity_token"
 fields on every form so that you don't have to specify those manually.
 
 
+Sinatra usage
+-------------
+
+Using formeze with sinatra is similar, the only difference is that there is
+no raw_post method on the request object so the body has to be read directly:
+
+```ruby
+form = SomeForm.new
+form.parse(request.body.read)
+
+if form.valid?
+  # do something with form data
+else
+  # display form.errors to user
+end
+```
+
+
 Integration with I18n
 ---------------------
 
