@@ -287,4 +287,10 @@ module Formeze
   def self.on_rails?
     defined?(Rails)
   end
+
+  class Form
+    def self.inherited(subclass)
+      Formeze.setup(subclass)
+    end
+  end
 end

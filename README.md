@@ -17,10 +17,27 @@ what it accepts as input.
 Example usage
 -------------
 
-Forms are just "plain old ruby objects". Calling `Formeze.setup` will include
-some class methods and instance methods, but will otherwise leave the object
-untouched (i.e. you can define your own initialization). Here is a minimal
-example, which defines a form with a single "title" field:
+Forms are just "plain old ruby objects" with added behaviour. Here is a
+minimal example, which defines a form with a single "title" field:
+
+```ruby
+class ExampleForm < Formeze::Form
+  field :title
+end
+```
+
+This form can then be used to parse and validate input data like this:
+
+```ruby
+form = ExampleForm.new
+
+form.parse('title=Title')
+
+form.title  # => "Title"
+```
+
+If you prefer not to inherit from the `Formeze::Form` class then you can
+instead call the `Formeze.setup` method like this:
 
 ```ruby
 class ExampleForm
@@ -30,15 +47,10 @@ class ExampleForm
 end
 ```
 
-This form can then be used to parse and validate form/input data as follows:
+Both styles of setup will include the formeze class methods and instance
+methods but will otherwise leave the object untouched (i.e. you can define
+your own initialization logic).
 
-```ruby
-form = ExampleForm.new
-
-form.parse('title=Title')
-
-form.title  # => "Title"
-```
 
 Detecting errors
 ----------------

@@ -3,9 +3,7 @@ require 'minitest/autorun'
 require_relative '../lib/formeze'
 require 'i18n'
 
-class FormWithField
-  Formeze.setup(self)
-
+class FormWithField < Formeze::Form
   field :title
 end
 
@@ -113,9 +111,7 @@ describe 'FormWithField after parsing input containing newlines' do
   end
 end
 
-class FormWithOptionalField
-  Formeze.setup(self)
-
+class FormWithOptionalField < Formeze::Form
   field :title, required: false
 end
 
@@ -132,9 +128,7 @@ describe 'FormWithOptionalField after parsing blank input' do
   end
 end
 
-class FormWithFieldThatCanHaveMultipleLines
-  Formeze.setup(self)
-
+class FormWithFieldThatCanHaveMultipleLines < Formeze::Form
   field :description, multiline: true
 end
 
@@ -151,9 +145,7 @@ describe 'FormWithFieldThatCanHaveMultipleLines after parsing input containing n
   end
 end
 
-class FormWithCharacterLimitedField
-  Formeze.setup(self)
-
+class FormWithCharacterLimitedField < Formeze::Form
   field :title, char_limit: 16
 end
 
@@ -170,9 +162,7 @@ describe 'FormWithCharacterLimitedField after parsing input with too many charac
   end
 end
 
-class FormWithWordLimitedField
-  Formeze.setup(self)
-
+class FormWithWordLimitedField < Formeze::Form
   field :title, word_limit: 2
 end
 
@@ -189,9 +179,7 @@ describe 'FormWithWordLimitedField after parsing input with too many words' do
   end
 end
 
-class FormWithFieldThatMustMatchPattern
-  Formeze.setup(self)
-
+class FormWithFieldThatMustMatchPattern < Formeze::Form
   field :number, pattern: /\A\d+\z/
 end
 
@@ -221,9 +209,7 @@ describe 'FormWithFieldThatMustMatchPattern after parsing input that does not ma
   end
 end
 
-class FormWithFieldThatCanHaveMultipleValues
-  Formeze.setup(self)
-
+class FormWithFieldThatCanHaveMultipleValues < Formeze::Form
   field :colour, multiple: true
 end
 
@@ -303,9 +289,7 @@ describe 'FormWithFieldThatCanHaveMultipleValues after parsing input with no val
   end
 end
 
-class FormWithFieldThatCanOnlyHaveSpecifiedValues
-  Formeze.setup(self)
-
+class FormWithFieldThatCanOnlyHaveSpecifiedValues < Formeze::Form
   field :answer, values: %w(yes no)
 end
 
@@ -322,9 +306,7 @@ describe 'FormWithFieldThatCanOnlyHaveSpecifiedValues after parsing input with a
   end
 end
 
-class FormWithGuardCondition
-  Formeze.setup(self)
-
+class FormWithGuardCondition < Formeze::Form
   field :account_name
   field :account_vat_number, defined_if: proc { @business_account }
 
@@ -370,9 +352,7 @@ describe 'FormWithGuardCondition with business_account set to false after parsin
   end
 end
 
-class FormWithHaltingCondition
-  Formeze.setup(self)
-
+class FormWithHaltingCondition < Formeze::Form
   field :delivery_address
   field :same_address, values: %w(yes no)
   field :billing_address, defined_unless: :same_address?
@@ -407,9 +387,7 @@ describe 'FormWithHaltingCondition after parsing input with same_address set and
   end
 end
 
-class FormWithCustomValidation
-  Formeze.setup(self)
-
+class FormWithCustomValidation < Formeze::Form
   field :email
 
   check { email.include?(?@) }
@@ -429,9 +407,7 @@ describe 'FormWithCustomValidation after parsing invalid input' do
   end
 end
 
-class FormWithOptionalKey
-  Formeze.setup(self)
-
+class FormWithOptionalKey < Formeze::Form
   field :accept_terms, values: %w(true), key_required: false
 end
 
@@ -448,9 +424,7 @@ describe 'FormWithOptionalKey after parsing input without the key' do
   end
 end
 
-class FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues
-  Formeze.setup(self)
-
+class FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues < Formeze::Form
   field :size, required: false, values: %w(S M L XL)
 end
 
@@ -469,9 +443,7 @@ end
 
 Rails = Object.new
 
-class RailsForm
-  Formeze.setup(self)
-
+class RailsForm < Formeze::Form
   field :title
 end
 
@@ -520,9 +492,7 @@ describe 'I18n integration' do
   end
 end
 
-class FormWithScrubbedFields
-  Formeze.setup(self)
-
+class FormWithScrubbedFields < Formeze::Form
   field :postcode, scrub: [:strip, :squeeze, :upcase], pattern: /\A[A-Z0-9]{2,4} [A-Z0-9]{3}\z/
   field :bio, scrub: [:strip, :squeeze_lines], multiline: true
 end
@@ -544,5 +514,16 @@ describe 'Formeze' do
     it 'should apply the scrub methods to the given input' do
       Formeze.scrub("word\n\n", [:strip, :upcase]).must_equal('WORD')
     end
+  end
+end
+
+class FormClassWithExplicitSetupCall
+  Formeze.setup(self)
+end
+
+describe 'FormClassWithExplicitSetupCall' do
+  it 'includes the formeze class methods and instance methods' do
+    FormClassWithExplicitSetupCall.singleton_class.must_include(Formeze::ClassMethods)
+    FormClassWithExplicitSetupCall.must_include(Formeze::InstanceMethods)
   end
 end
