@@ -221,6 +221,28 @@ module Formeze
       end
     end
 
+    def valid?
+      errors.empty?
+    end
+
+    def errors?
+      errors.size > 0
+    end
+
+    def errors
+      @errors ||= []
+    end
+
+    def errors_on?(field_name)
+      field_errors[field_name].size > 0
+    end
+
+    def errors_on(field_name)
+      field_errors[field_name]
+    end
+
+    private
+
     def field_defined?(field)
       if field.defined_if?
         instance_eval(&field.defined_if)
@@ -241,26 +263,6 @@ module Formeze
       errors << error
 
       field_errors[field_name] << error unless field_name.nil?
-    end
-
-    def errors
-      @errors ||= []
-    end
-
-    def errors?
-      errors.size > 0
-    end
-
-    def errors_on(field_name)
-      field_errors[field_name]
-    end
-
-    def errors_on?(field_name)
-      field_errors[field_name].size > 0
-    end
-
-    def valid?
-      errors.empty?
     end
   end
 
