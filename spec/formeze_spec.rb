@@ -69,6 +69,20 @@ describe 'FormWithField after parsing valid input' do
       @form.errors.must_be_empty
     end
   end
+
+  describe 'errors_on query method' do
+    it 'should return false when given the title field name' do
+      @form.errors_on?(:title).must_equal(false)
+    end
+  end
+
+  describe 'errors_on method' do
+    it 'should return an empty array when given the title field name' do
+      errors = @form.errors_on(:title)
+      errors.must_be_instance_of(Array)
+      errors.must_be_empty
+    end
+  end
 end
 
 describe 'FormWithField after parsing blank input' do
@@ -90,10 +104,25 @@ describe 'FormWithField after parsing blank input' do
   end
 
   describe 'errors method' do
-    it 'should return an array containing an error message' do
+    it 'should return an array containing a single error message' do
       @form.errors.must_be_instance_of(Array)
       @form.errors.length.must_equal(1)
       @form.errors.first.to_s.must_equal('Title is required')
+    end
+  end
+
+  describe 'errors_on query method' do
+    it 'should return true when given the title field name' do
+      @form.errors_on?(:title).must_equal(true)
+    end
+  end
+
+  describe 'errors_on method' do
+    it 'should return an array containing a single error message when given the title field name' do
+      errors = @form.errors_on(:title)
+      errors.must_be_instance_of(Array)
+      errors.length.must_equal(1)
+      errors.first.to_s.must_equal('Title is required')
     end
   end
 end

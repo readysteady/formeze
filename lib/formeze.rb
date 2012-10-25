@@ -207,7 +207,7 @@ module Formeze
           scrubbed_value = field.scrub(value)
 
           field.validate(scrubbed_value) do |error|
-            errors << UserError.new("#{field.label} #{error}")
+            error!("#{field.label} #{error}", field.name)
           end
 
           send(:"#{field.name}=", scrubbed_value)
@@ -216,8 +216,8 @@ module Formeze
 
       raise KeyError unless form_data.empty?
 
-      self.class.checks.zip(self.class.errors) do |check, error|
-        instance_eval(&check) ? next : errors << UserError.new(error)
+      self.class.checks.zip(self.class.errors) do |check, message|
+        instance_eval(&check) ? next : error!(message)
       end
     end
 
@@ -231,12 +231,32 @@ module Formeze
       end
     end
 
+    def field_errors
+      @field_errors ||= Hash.new { |h, k| h[k] = [] }
+    end
+
+    def error!(message, field_name = nil)
+      error = UserError.new(message)
+
+      errors << error
+
+      field_errors[field_name] << error unless field_name.nil?
+    end
+
     def errors
       @errors ||= []
     end
 
     def errors?
       errors.size > 0
+    end
+
+    def errors_on(field_name)
+      field_errors[field_name]
+    end
+
+    def errors_on?(field_name)
+      field_errors[field_name].size > 0
     end
 
     def valid?
