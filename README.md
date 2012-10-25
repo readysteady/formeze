@@ -14,6 +14,14 @@ of being "strict by default", forcing the application code to be explicit in
 what it accepts as input.
 
 
+Installation
+------------
+
+```
+$ gem install formeze
+```
+
+
 Example usage
 -------------
 
