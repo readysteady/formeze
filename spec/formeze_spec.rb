@@ -111,6 +111,15 @@ describe 'FormWithField after parsing input containing newlines' do
   end
 end
 
+describe 'FormWithField parse class method' do
+  it 'should create a new instance of the class and call the parse instance method' do
+    form = FormWithField.parse('title=Untitled')
+    form.must_be_instance_of(FormWithField)
+    form.valid?.must_equal(true)
+    form.title.must_equal('Untitled')
+  end
+end
+
 class FormWithOptionalField < Formeze::Form
   field :title, required: false
 end

@@ -172,6 +172,10 @@ module Formeze
     def error(message)
       errors << message
     end
+
+    def parse(encoded_form_data)
+      new.tap { |form| form.parse(encoded_form_data) }
+    end
   end
 
   class KeyError < StandardError; end
