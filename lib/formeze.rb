@@ -241,6 +241,13 @@ module Formeze
       field_errors[field_name]
     end
 
+    def to_hash
+      self.class.fields.inject({}) do |hash, field|
+        hash[field.name] = send(field.name)
+        hash
+      end
+    end
+
     private
 
     def field_defined?(field)

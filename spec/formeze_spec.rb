@@ -82,6 +82,12 @@ describe 'FormWithField after parsing valid input' do
       errors.must_be_empty
     end
   end
+
+  describe 'to_hash method' do
+    it 'should return a hash containing the field name and its value' do
+      @form.to_hash.must_equal({:title => 'Untitled'})
+    end
+  end
 end
 
 describe 'FormWithField after parsing blank input' do
@@ -302,6 +308,12 @@ describe 'FormWithFieldThatCanHaveMultipleValues after parsing input with multip
   describe 'valid query method' do
     it 'should return true' do
       @form.valid?.must_equal(true)
+    end
+  end
+
+  describe 'to_hash method' do
+    it 'should return a hash containing the field name and its array value' do
+      @form.to_hash.must_equal({:colour => %w(black white)})
     end
   end
 end
