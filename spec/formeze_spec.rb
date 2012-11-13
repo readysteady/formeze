@@ -1,6 +1,5 @@
 require 'minitest/autorun'
-
-require_relative '../lib/formeze'
+require 'formeze'
 require 'i18n'
 
 class FormWithField < Formeze::Form
@@ -150,7 +149,7 @@ describe 'FormWithField parse class method' do
 end
 
 class FormWithOptionalField < Formeze::Form
-  field :title, required: false
+  field :title, :required => false
 end
 
 describe 'FormWithOptionalField after parsing blank input' do
@@ -167,7 +166,7 @@ describe 'FormWithOptionalField after parsing blank input' do
 end
 
 class FormWithFieldThatCanHaveMultipleLines < Formeze::Form
-  field :description, multiline: true
+  field :description, :multiline => true
 end
 
 describe 'FormWithFieldThatCanHaveMultipleLines after parsing input containing newlines' do
@@ -184,7 +183,7 @@ describe 'FormWithFieldThatCanHaveMultipleLines after parsing input containing n
 end
 
 class FormWithCharacterLimitedField < Formeze::Form
-  field :title, char_limit: 16
+  field :title, :char_limit => 16
 end
 
 describe 'FormWithCharacterLimitedField after parsing input with too many characters' do
@@ -201,7 +200,7 @@ describe 'FormWithCharacterLimitedField after parsing input with too many charac
 end
 
 class FormWithWordLimitedField < Formeze::Form
-  field :title, word_limit: 2
+  field :title, :word_limit => 2
 end
 
 describe 'FormWithWordLimitedField after parsing input with too many words' do
@@ -218,7 +217,7 @@ describe 'FormWithWordLimitedField after parsing input with too many words' do
 end
 
 class FormWithFieldThatMustMatchPattern < Formeze::Form
-  field :number, pattern: /\A\d+\z/
+  field :number, :pattern => /\A\d+\z/
 end
 
 describe 'FormWithFieldThatMustMatchPattern after parsing input that matches the pattern' do
@@ -248,7 +247,7 @@ describe 'FormWithFieldThatMustMatchPattern after parsing input that does not ma
 end
 
 class FormWithFieldThatCanHaveMultipleValues < Formeze::Form
-  field :colour, multiple: true
+  field :colour, :multiple => true
 end
 
 describe 'FormWithFieldThatCanHaveMultipleValues' do
@@ -328,7 +327,7 @@ describe 'FormWithFieldThatCanHaveMultipleValues after parsing input with no val
 end
 
 class FormWithFieldThatCanOnlyHaveSpecifiedValues < Formeze::Form
-  field :answer, values: %w(yes no)
+  field :answer, :values => %w(yes no)
 end
 
 describe 'FormWithFieldThatCanOnlyHaveSpecifiedValues after parsing input with an invalid value' do
@@ -346,7 +345,7 @@ end
 
 class FormWithGuardCondition < Formeze::Form
   field :account_name
-  field :account_vat_number, defined_if: proc { @business_account }
+  field :account_vat_number, :defined_if => proc { @business_account }
 
   def initialize(business_account)
     @business_account = business_account
@@ -392,8 +391,8 @@ end
 
 class FormWithHaltingCondition < Formeze::Form
   field :delivery_address
-  field :same_address, values: %w(yes no)
-  field :billing_address, defined_unless: :same_address?
+  field :same_address, :values => %w(yes no)
+  field :billing_address, :defined_unless => :same_address?
 
   def same_address?
     same_address == 'yes'
@@ -446,7 +445,7 @@ describe 'FormWithCustomValidation after parsing invalid input' do
 end
 
 class FormWithOptionalKey < Formeze::Form
-  field :accept_terms, values: %w(true), key_required: false
+  field :accept_terms, :values => %w(true), :key_required => false
 end
 
 describe 'FormWithOptionalKey after parsing input without the key' do
@@ -463,7 +462,7 @@ describe 'FormWithOptionalKey after parsing input without the key' do
 end
 
 class FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues < Formeze::Form
-  field :size, required: false, values: %w(S M L XL)
+  field :size, :required => false, :values => %w(S M L XL)
 end
 
 describe 'FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues after parsing blank input' do
@@ -514,7 +513,7 @@ describe 'I18n integration' do
   end
 
   it 'should be possible to override the default error messages' do
-    I18n.backend.store_translations :en, {formeze: {errors: {required: 'cannot be blank'}}}
+    I18n.backend.store_translations :en, {:formeze => {:errors => {:required => 'cannot be blank'}}}
 
     form = FormWithField.new
     form.parse('title=')
@@ -522,7 +521,7 @@ describe 'I18n integration' do
   end
 
   it 'should be possible to set labels globally' do
-    I18n.backend.store_translations :en, {formeze: {labels: {title: 'TITLE'}}}
+    I18n.backend.store_translations :en, {:formeze => {:labels => {:title => 'TITLE'}}}
 
     form = FormWithField.new
     form.parse('title=')
@@ -531,8 +530,8 @@ describe 'I18n integration' do
 end
 
 class FormWithScrubbedFields < Formeze::Form
-  field :postcode, scrub: [:strip, :squeeze, :upcase], pattern: /\A[A-Z0-9]{2,4} [A-Z0-9]{3}\z/
-  field :bio, scrub: [:strip, :squeeze_lines], multiline: true
+  field :postcode, :scrub => [:strip, :squeeze, :upcase], :pattern => /\A[A-Z0-9]{2,4} [A-Z0-9]{3}\z/
+  field :bio, :scrub => [:strip, :squeeze_lines], :multiline => true
 end
 
 describe 'FormWithScrubbedFields' do
@@ -541,7 +540,7 @@ describe 'FormWithScrubbedFields' do
       form = FormWithScrubbedFields.new
       form.parse('postcode=++sw1a+++1aa&bio=My+name+is+Cookie+Monster.%0A%0A%0A%0AI+LOVE+COOKIES!!!!%0A%0A%0A%0A')
       form.postcode.must_equal('SW1A 1AA')
-      form.bio.count(?\n).must_equal(2)
+      form.bio.count("\n").must_equal(2)
       form.valid?.must_equal(true)
     end
   end
@@ -560,8 +559,19 @@ class FormClassWithExplicitSetupCall
 end
 
 describe 'FormClassWithExplicitSetupCall' do
+  before do
+    @form_class = FormClassWithExplicitSetupCall
+  end
+
   it 'includes the formeze class methods and instance methods' do
-    FormClassWithExplicitSetupCall.singleton_class.must_include(Formeze::ClassMethods)
-    FormClassWithExplicitSetupCall.must_include(Formeze::InstanceMethods)
+    singleton_class = if @form.respond_to?(:singleton_class)
+      @form_class.singleton_class
+    else
+      (class << @form_class; self; end)
+    end
+
+    singleton_class.must_include(Formeze::ClassMethods)
+
+    @form_class.must_include(Formeze::InstanceMethods)
   end
 end

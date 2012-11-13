@@ -37,7 +37,7 @@ module Formeze
     end
 
     def error(i18n_key, default)
-      translate(i18n_key, scope: [:formeze, :errors], default: default)
+      translate(i18n_key, :scope => [:formeze, :errors], :default => default)
     end
 
     def key
@@ -49,7 +49,7 @@ module Formeze
     end
 
     def label
-      @options.fetch(:label) { translate(name, scope: [:formeze, :labels], default: Label.new(name)) }
+      @options.fetch(:label) { translate(name, :scope => [:formeze, :labels], :default => Label.new(name)) }
     end
 
     def required?
@@ -288,9 +288,9 @@ module Formeze
     form.extend ClassMethods
 
     if on_rails?
-      form.field(:utf8, key_required: false)
+      form.field(:utf8, :key_required => false)
 
-      form.field(:authenticity_token, key_required: false)
+      form.field(:authenticity_token, :key_required => false)
     end
   end
 
