@@ -63,9 +63,9 @@ your own initialization logic).
 Detecting errors
 ----------------
 
-Formeze distinguishes between user errors (which are expected in the normal
-running of your application), and key/value errors (which most likely indicate
-either developer error, or form tampering).
+Formeze distinguishes between validation errors (which are expected in the
+normal running of your application), and key/value errors (which most likely
+indicate either developer error, or form tampering).
 
 For the latter case, the `parse` method that formeze provides will raise a
 Formeze::KeyError or a Formeze::ValueError exception if the structure of the
@@ -73,7 +73,10 @@ form data does not match the field definitions.
 
 After calling `parse` you can check that the form is valid by calling the
 `#valid?` method. If it isn't you can call the `errors` method which will
-return an array of error messages to display to the user.
+return an array of error messages to display to the end user.
+
+You can also use `errors_on?` and `errors_on` to check for and select error
+messages specific to a single field.
 
 
 Field options
