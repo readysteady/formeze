@@ -182,7 +182,7 @@ module Formeze
 
   class ValueError < StandardError; end
 
-  class UserError < StandardError; end
+  class ValidationError < StandardError; end
 
   module InstanceMethods
     def parse(encoded_form_data)
@@ -258,7 +258,7 @@ module Formeze
     end
 
     def error!(message, field_name = nil)
-      error = UserError.new(message)
+      error = ValidationError.new(message)
 
       errors << error
 
