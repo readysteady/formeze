@@ -12,33 +12,33 @@ describe 'FormWithField' do
   end
 
   describe 'title method' do
-    it 'should return nil' do
+    it 'returns nil' do
       @form.title.must_be_nil
     end
   end
 
   describe 'title equals method' do
-    it 'should set the value of the title attribute' do
+    it 'sets the value of the title attribute' do
       @form.title = 'Untitled'
       @form.title.must_equal('Untitled')
     end
   end
 
   describe 'parse method' do
-    it 'should set the value of the title attribute' do
+    it 'sets the value of the title attribute' do
       @form.parse('title=Untitled')
       @form.title.must_equal('Untitled')
     end
 
-    it 'should raise an exception when the key is missing' do
+    it 'raises an exception when the key is missing' do
       proc { @form.parse('') }.must_raise(Formeze::KeyError)
     end
 
-    it 'should raise an exception when there are multiple values for the key' do
+    it 'raises an exception when there are multiple values for the key' do
       proc { @form.parse('title=foo&title=bar') }.must_raise(Formeze::ValueError)
     end
 
-    it 'should raise an exception when there is an unexpected key' do
+    it 'raises an exception when there is an unexpected key' do
       proc { @form.parse('title=Untitled&foo=bar') }.must_raise(Formeze::KeyError)
     end
   end
@@ -51,32 +51,32 @@ describe 'FormWithField after parsing valid input' do
   end
 
   describe 'valid query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.valid?.must_equal(true)
     end
   end
 
   describe 'errors query method' do
-    it 'should return false' do
+    it 'returns false' do
       @form.errors?.must_equal(false)
     end
   end
 
   describe 'errors method' do
-    it 'should return an empty array' do
+    it 'returns an empty array' do
       @form.errors.must_be_instance_of(Array)
       @form.errors.must_be_empty
     end
   end
 
   describe 'errors_on query method' do
-    it 'should return false when given the title field name' do
+    it 'returns false when given the title field name' do
       @form.errors_on?(:title).must_equal(false)
     end
   end
 
   describe 'errors_on method' do
-    it 'should return an empty array when given the title field name' do
+    it 'returns an empty array when given the title field name' do
       errors = @form.errors_on(:title)
       errors.must_be_instance_of(Array)
       errors.must_be_empty
@@ -84,7 +84,7 @@ describe 'FormWithField after parsing valid input' do
   end
 
   describe 'to_hash method' do
-    it 'should return a hash containing the field name and its value' do
+    it 'returns a hash containing the field name and its value' do
       @form.to_hash.must_equal({:title => 'Untitled'})
     end
   end
@@ -97,19 +97,19 @@ describe 'FormWithField after parsing blank input' do
   end
 
   describe 'valid query method' do
-    it 'should return false' do
+    it 'returns false' do
       @form.valid?.must_equal(false)
     end
   end
 
   describe 'errors query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.errors?.must_equal(true)
     end
   end
 
   describe 'errors method' do
-    it 'should return an array containing a single error message' do
+    it 'returns an array containing a single error message' do
       @form.errors.must_be_instance_of(Array)
       @form.errors.length.must_equal(1)
       @form.errors.first.to_s.must_equal('Title is required')
@@ -117,13 +117,13 @@ describe 'FormWithField after parsing blank input' do
   end
 
   describe 'errors_on query method' do
-    it 'should return true when given the title field name' do
+    it 'returns true when given the title field name' do
       @form.errors_on?(:title).must_equal(true)
     end
   end
 
   describe 'errors_on method' do
-    it 'should return an array containing a single error message when given the title field name' do
+    it 'returns an array containing a single error message when given the title field name' do
       errors = @form.errors_on(:title)
       errors.must_be_instance_of(Array)
       errors.length.must_equal(1)
@@ -139,14 +139,14 @@ describe 'FormWithField after parsing input containing newlines' do
   end
 
   describe 'valid query method' do
-    it 'should return false' do
+    it 'returns false' do
       @form.valid?.must_equal(false)
     end
   end
 end
 
 describe 'FormWithField parse class method' do
-  it 'should create a new instance of the class and call the parse instance method' do
+  it 'creates a new instance of the class and calls the parse instance method' do
     form = FormWithField.parse('title=Untitled')
     form.must_be_instance_of(FormWithField)
     form.valid?.must_equal(true)
@@ -165,7 +165,7 @@ describe 'FormWithOptionalField after parsing blank input' do
   end
 
   describe 'valid query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.valid?.must_equal(true)
     end
   end
@@ -182,7 +182,7 @@ describe 'FormWithFieldThatCanHaveMultipleLines after parsing input containing n
   end
 
   describe 'valid query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.valid?.must_equal(true)
     end
   end
@@ -199,7 +199,7 @@ describe 'FormWithCharacterLimitedField after parsing input with too many charac
   end
 
   describe 'valid query method' do
-    it 'should return false' do
+    it 'returns false' do
       @form.valid?.must_equal(false)
     end
   end
@@ -216,7 +216,7 @@ describe 'FormWithWordLimitedField after parsing input with too many words' do
   end
 
   describe 'valid query method' do
-    it 'should return false' do
+    it 'returns false' do
       @form.valid?.must_equal(false)
     end
   end
@@ -233,7 +233,7 @@ describe 'FormWithFieldThatMustMatchPattern after parsing input that matches the
   end
 
   describe 'valid query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.valid?.must_equal(true)
     end
   end
@@ -246,7 +246,7 @@ describe 'FormWithFieldThatMustMatchPattern after parsing input that does not ma
   end
 
   describe 'valid query method' do
-    it 'should return false' do
+    it 'returns false' do
       @form.valid?.must_equal(false)
     end
   end
@@ -262,30 +262,30 @@ describe 'FormWithFieldThatCanHaveMultipleValues' do
   end
 
   describe 'colour method' do
-    it 'should return an empty array' do
+    it 'returns an empty array' do
       @form.colour.must_be_instance_of(Array)
       @form.colour.must_be_empty
     end
   end
 
   describe 'colour equals method' do
-    it 'should add the argument to the colour attribute array' do
+    it 'adds the argument to the colour attribute array' do
       @form.colour = 'black'
       @form.colour.must_include('black')
     end
   end
 
   describe 'parse method' do
-    it 'should add the value to the colour attribute array' do
+    it 'adds the value to the colour attribute array' do
       @form.parse('colour=black')
       @form.colour.must_include('black')
     end
 
-    it 'should not raise an exception when there are multiple values for the key' do
+    it 'does not raise an exception when there are multiple values for the key' do
       @form.parse('colour=black&colour=white')
     end
 
-    it 'should not raise an exception when the key is missing' do
+    it 'does not raise an exception when the key is missing' do
       @form.parse('')
     end
   end
@@ -298,7 +298,7 @@ describe 'FormWithFieldThatCanHaveMultipleValues after parsing input with multip
   end
 
   describe 'colour method' do
-    it 'should return an array containing the values' do
+    it 'returns an array containing the values' do
       @form.colour.must_be_instance_of(Array)
       @form.colour.must_include('black')
       @form.colour.must_include('white')
@@ -306,13 +306,13 @@ describe 'FormWithFieldThatCanHaveMultipleValues after parsing input with multip
   end
 
   describe 'valid query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.valid?.must_equal(true)
     end
   end
 
   describe 'to_hash method' do
-    it 'should return a hash containing the field name and its array value' do
+    it 'returns a hash containing the field name and its array value' do
       @form.to_hash.must_equal({:colour => %w(black white)})
     end
   end
@@ -325,14 +325,14 @@ describe 'FormWithFieldThatCanHaveMultipleValues after parsing input with no val
   end
 
   describe 'colour method' do
-    it 'should return an empty array' do
+    it 'returns an empty array' do
       @form.colour.must_be_instance_of(Array)
       @form.colour.must_be_empty
     end
   end
 
   describe 'valid query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.valid?.must_equal(true)
     end
   end
@@ -349,7 +349,7 @@ describe 'FormWithFieldThatCanOnlyHaveSpecifiedValues after parsing input with a
   end
 
   describe 'valid query method' do
-    it 'should return false' do
+    it 'returns false' do
       @form.valid?.must_equal(false)
     end
   end
@@ -370,7 +370,7 @@ describe 'FormWithGuardCondition with business_account set to false' do
   end
 
   describe 'parse method' do
-    it 'should raise an exception when the account_vat_number is present' do
+    it 'raises an exception when the account_vat_number key is present' do
       proc { @form.parse('account_name=Something&account_vat_number=123456789') }.must_raise(Formeze::KeyError)
     end
   end
@@ -382,7 +382,7 @@ describe 'FormWithGuardCondition with business_account set to true' do
   end
 
   describe 'parse method' do
-    it 'should raise an exception when the account_vat_number key is missing' do
+    it 'raises an exception when the account_vat_number key is missing' do
       proc { @form.parse('account_name=Something') }.must_raise(Formeze::KeyError)
     end
   end
@@ -395,7 +395,7 @@ describe 'FormWithGuardCondition with business_account set to false after parsin
   end
 
   describe 'valid query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.valid?.must_equal(true)
     end
   end
@@ -417,7 +417,7 @@ describe 'FormWithHaltingCondition' do
   end
 
   describe 'parse method' do
-    it 'should raise an exception when there is an unexpected key' do
+    it 'raises an exception when there is an unexpected key' do
       proc { @form.parse('delivery_address=123+Main+St&same_address=yes&foo=bar') }.must_raise(Formeze::KeyError)
     end
   end
@@ -430,7 +430,7 @@ describe 'FormWithHaltingCondition after parsing input with same_address set and
   end
 
   describe 'valid query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.valid?.must_equal(true)
     end
   end
@@ -450,7 +450,7 @@ describe 'FormWithCustomValidation after parsing invalid input' do
   end
 
   describe 'valid query method' do
-    it 'should return false' do
+    it 'returns false' do
       @form.valid?.must_equal(false)
     end
   end
@@ -467,7 +467,7 @@ describe 'FormWithOptionalKey after parsing input without the key' do
   end
 
   describe 'valid query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.valid?.must_equal(true)
     end
   end
@@ -484,7 +484,7 @@ describe 'FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues after parsing blan
   end
 
   describe 'valid query method' do
-    it 'should return true' do
+    it 'returns true' do
       @form.valid?.must_equal(true)
     end
   end
@@ -502,13 +502,13 @@ describe 'RailsForm' do
   end
 
   describe 'parse method' do
-    it 'should automatically process the utf8 and authenticity_token parameters' do
+    it 'automatically processes the utf8 and authenticity_token parameters' do
       @form.parse('utf8=%E2%9C%93&authenticity_token=5RMc3sPZdR%2BZz4onNS8NfK&title=Test')
       @form.authenticity_token.wont_be_empty
       @form.utf8.wont_be_empty
     end
 
-    it 'should not complain if the utf8 or authenticity_token parameters are missing' do
+    it 'does not complain if the utf8 or authenticity_token parameters are missing' do
       @form.parse('utf8=%E2%9C%93&title=Test')
       @form.parse('authenticity_token=5RMc3sPZdR%2BZz4onNS8NfK&title=Test')
     end
@@ -524,7 +524,7 @@ describe 'I18n integration' do
     I18n.backend = I18n::Backend::Simple.new
   end
 
-  it 'should be possible to override the default error messages' do
+  it 'provides i18n support for overriding the default error messages' do
     I18n.backend.store_translations :en, {:formeze => {:errors => {:required => 'cannot be blank'}}}
 
     form = FormWithField.new
@@ -532,7 +532,7 @@ describe 'I18n integration' do
     form.errors.first.to_s.must_equal('Title cannot be blank')
   end
 
-  it 'should be possible to set labels globally' do
+  it 'provides i18n support for specifying field labels globally' do
     I18n.backend.store_translations :en, {:formeze => {:labels => {:title => 'TITLE'}}}
 
     form = FormWithField.new
@@ -548,7 +548,7 @@ end
 
 describe 'FormWithScrubbedFields' do
   describe 'parse method' do
-    it 'should apply the scrub methods to the input before validation' do
+    it 'applies the scrub methods to the input before validation' do
       form = FormWithScrubbedFields.new
       form.parse('postcode=++sw1a+++1aa&bio=My+name+is+Cookie+Monster.%0A%0A%0A%0AI+LOVE+COOKIES!!!!%0A%0A%0A%0A')
       form.postcode.must_equal('SW1A 1AA')
@@ -560,7 +560,7 @@ end
 
 describe 'Formeze' do
   describe 'scrub module method' do
-    it 'should apply the scrub methods to the given input' do
+    it 'applies the scrub methods to the given input' do
       Formeze.scrub("word\n\n", [:strip, :upcase]).must_equal('WORD')
     end
   end
