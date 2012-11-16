@@ -42,6 +42,22 @@ describe 'FormWithField' do
       proc { @form.parse('title=Untitled&foo=bar') }.must_raise(Formeze::KeyError)
     end
   end
+
+  describe 'fill method' do
+    it 'sets the value of the title attribute when given a hash with symbol keys' do
+      @form.fill({:title => 'Untitled'})
+      @form.title.must_equal('Untitled')
+    end
+
+    it 'sets the value of the title attribute when given an object with a title attribute' do
+      object = Object.new
+
+      def object.title; 'Untitled' end
+
+      @form.fill(object)
+      @form.title.must_equal('Untitled')
+    end
+  end
 end
 
 describe 'FormWithField after parsing valid input' do

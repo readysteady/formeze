@@ -185,6 +185,16 @@ module Formeze
   class ValidationError < StandardError; end
 
   module InstanceMethods
+    def fill(object)
+      self.class.fields.each do |field|
+        if Hash === object && object.has_key?(field.name)
+          send(:"#{field.name}=", object[field.name])
+        elsif object.respond_to?(field.name)
+          send(:"#{field.name}=", object.send(field.name))
+        end
+      end
+    end
+
     def parse(encoded_form_data)
       form_data = CGI.parse(encoded_form_data)
 
