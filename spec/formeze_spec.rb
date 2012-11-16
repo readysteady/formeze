@@ -490,27 +490,23 @@ describe 'FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues after parsing blan
   end
 end
 
-Rails = Object.new
-
-class RailsForm < Formeze::Form
-  field :title
-end
-
-describe 'RailsForm' do
+describe 'FormWithField on Rails' do
   before do
-    @form = RailsForm.new
+    @form = FormWithField.new
+
+    Object.const_set(:Rails, Object.new)
+  end
+
+  after do
+    Object.send(:remove_const, :Rails)
   end
 
   describe 'parse method' do
-    it 'automatically processes the utf8 and authenticity_token parameters' do
+    it 'silently ignores the utf8 and authenticity_token parameters' do
       @form.parse('utf8=%E2%9C%93&authenticity_token=5RMc3sPZdR%2BZz4onNS8NfK&title=Test')
-      @form.authenticity_token.wont_be_empty
-      @form.utf8.wont_be_empty
-    end
-
-    it 'does not complain if the utf8 or authenticity_token parameters are missing' do
-      @form.parse('utf8=%E2%9C%93&title=Test')
-      @form.parse('authenticity_token=5RMc3sPZdR%2BZz4onNS8NfK&title=Test')
+      @form.wont_respond_to(:utf8)
+      @form.wont_respond_to(:authenticity_token)
+      @form.to_hash.must_equal({:title => 'Test'})
     end
   end
 end

@@ -214,6 +214,10 @@ module Formeze
         end
       end
 
+      if defined?(Rails)
+        %w(utf8 authenticity_token).each { |field_key| form_data.delete(field_key) }
+      end
+
       raise KeyError unless form_data.empty?
 
       self.class.checks.zip(self.class.errors) do |check, message|
@@ -293,16 +297,6 @@ module Formeze
     form.send :include, InstanceMethods
 
     form.extend ClassMethods
-
-    if on_rails?
-      form.field(:utf8, :key_required => false)
-
-      form.field(:authenticity_token, :key_required => false)
-    end
-  end
-
-  def self.on_rails?
-    defined?(Rails)
   end
 
   class Form

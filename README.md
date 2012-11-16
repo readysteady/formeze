@@ -206,8 +206,8 @@ else
 end
 ```
 
-Formeze will automatically define optional "utf8" and "authenticity_token"
-fields on every form so that you don't have to specify those manually.
+Formeze will automatically ignore the "utf8" and "authenticity_token"
+parameters that Rails uses, so you don't have to handle those manually.
 
 
 Sinatra usage
