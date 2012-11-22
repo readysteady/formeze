@@ -94,6 +94,13 @@ it by setting the `char_limit` option. For example:
 field :title, char_limit: 200
 ```
 
+Specify the `required` option to make the field optional, i.e. the value
+of the field can be blank/empty. For example:
+
+```ruby
+field :title, required: false
+```
+
 If you are dealing with textareas (i.e. multiple lines of text) then you can
 set the `multiline` option to allow newlines. For example:
 
