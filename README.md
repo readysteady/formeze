@@ -101,6 +101,14 @@ of the field can be blank/empty. For example:
 field :title, required: false
 ```
 
+To make it easy to integrate with your application you might want to return
+a different value for blank fields, such as nil, zero, or a "null" object.
+Use the `blank` option to specify this behaviour. For example:
+
+```ruby
+field :title, required: false, blank: nil
+```
+
 If you are dealing with textareas (i.e. multiple lines of text) then you can
 set the `multiline` option to allow newlines. For example:
 

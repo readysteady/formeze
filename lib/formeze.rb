@@ -18,13 +18,13 @@ module Formeze
       @name, @options = name, options
     end
 
-    def scrub(value)
-      Formeze.scrub(value, @options[:scrub])
-    end
+    def validate(value, form)
+      value = Formeze.scrub(value, @options[:scrub])
 
-    def validate(value)
-      if blank?(value)
+      if value !~ /\S/
         yield error(:required, 'is required') if required?
+
+        form.send(:"#{name}=", blank_value? ? blank_value : value)
       else
         yield error(:not_multiline, 'cannot contain newlines') if !multiline? && value.lines.count > 1
 
@@ -33,6 +33,8 @@ module Formeze
         yield error(:no_match, 'is invalid') if no_match?(value)
 
         yield error(:bad_value, 'is invalid') if values? && !values.include?(value)
+
+        form.send(:"#{name}=", value)
       end
     end
 
@@ -80,8 +82,12 @@ module Formeze
       @options.has_key?(:pattern) && value !~ @options[:pattern]
     end
 
-    def blank?(value)
-      value !~ /\S/
+    def blank_value?
+      @options.has_key?(:blank)
+    end
+
+    def blank_value
+      @options.fetch(:blank)
     end
 
     def values?
@@ -214,13 +220,9 @@ module Formeze
         end
 
         values.each do |value|
-          scrubbed_value = field.scrub(value)
-
-          field.validate(scrubbed_value) do |error|
+          field.validate(value, self) do |error|
             error!("#{field.label} #{error}", field.name)
           end
-
-          send(:"#{field.name}=", scrubbed_value)
         end
       end
 

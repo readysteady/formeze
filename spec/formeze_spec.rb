@@ -66,6 +66,12 @@ describe 'FormWithField after parsing valid input' do
     @form.parse('title=Untitled')
   end
 
+  describe 'title method' do
+    it 'returns the value of the field' do
+      @form.title.must_equal('Untitled')
+    end
+  end
+
   describe 'valid query method' do
     it 'returns true' do
       @form.valid?.must_equal(true)
@@ -183,6 +189,23 @@ describe 'FormWithOptionalField after parsing blank input' do
   describe 'valid query method' do
     it 'returns true' do
       @form.valid?.must_equal(true)
+    end
+  end
+end
+
+class FormWithOptionalFieldUsingBlankOption < Formeze::Form
+  field :title, :required => false, :blank => 42
+end
+
+describe 'FormWithOptionalFieldUsingBlankOption after parsing blank input' do
+  before do
+    @form = FormWithOptionalFieldUsingBlankOption.new
+    @form.parse('title=')
+  end
+
+  describe 'title method' do
+    it 'returns the value specified by the blank option' do
+      @form.title.must_equal(42)
     end
   end
 end
