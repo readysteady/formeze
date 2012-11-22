@@ -83,7 +83,7 @@ Field options
 -------------
 
 By default fields cannot be blank, they are limited to 64 characters,
-and they cannot contain newlines. These restrictions can be overrided
+and they cannot contain newlines. These restrictions can be overridden
 by setting various field options.
 
 Defining a field without any options works well for a simple text input.
