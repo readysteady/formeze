@@ -5,7 +5,7 @@ Formeze: A little library for handling form data/input
 Motivation
 ----------
 
-Most web apps built for end users will need to process urlencoded form data.
+Most web apps built for end users will need to process url-encoded form data.
 Registration forms, profile forms, checkout forms, contact forms, and forms
 for adding/editing application specific data. As developers we would like to
 process this data safely, to minimise the possibility of security holes
@@ -25,8 +25,7 @@ $ gem install formeze
 Example usage
 -------------
 
-Forms are just "plain old ruby objects" with added behaviour. Here is a
-minimal example, which defines a form with a single "title" field:
+Here is a minimal example, which defines a form with a single field:
 
 ```ruby
 class ExampleForm < Formeze::Form
@@ -68,8 +67,8 @@ normal running of your application), and key/value errors (which most likely
 indicate either developer error, or form tampering).
 
 For the latter case, the `parse` method that formeze provides will raise a
-Formeze::KeyError or a Formeze::ValueError exception if the structure of the
-form data does not match the field definitions.
+`Formeze::KeyError` or a `Formeze::ValueError` exception if the structure of
+the form data does not match the field definitions.
 
 After calling `parse` you can check that the form is valid by calling the
 `#valid?` method. If it isn't you can call the `errors` method which will
@@ -87,15 +86,18 @@ and they cannot contain newlines. These restrictions can be overridden
 by setting various field options.
 
 Defining a field without any options works well for a simple text input.
-If the default character limit is too big or too small you can override
-it by setting the `char_limit` option. For example:
+If the default length limit is too big or too small you can override it
+by setting the `maxlength` option. For example:
 
 ```ruby
-field :title, char_limit: 200
+field :title, maxlength: 200
 ```
 
-Specify the `required` option to make the field optional, i.e. the value
-of the field can be blank/empty. For example:
+Similarly there is a `minlength` option for validating fields that should
+have a minimum number of characters (e.g. passwords).
+
+Fields are required by default. Specify the `required` option if the field
+is not required, i.e. the value of the field can be blank/empty. For example:
 
 ```ruby
 field :title, required: false
@@ -113,7 +115,7 @@ If you are dealing with textareas (i.e. multiple lines of text) then you can
 set the `multiline` option to allow newlines. For example:
 
 ```ruby
-field :description, char_limit: 500, multiline: true
+field :description, maxlength: 500, multiline: true
 ```
 
 Error messages will include the field label, which by default is set to the
@@ -131,7 +133,7 @@ well defined formats, like numbers. For example:
 ```ruby
 field :number, pattern: /\A[1-9]\d*\z/
 
-field :card_security_code, char_limit: 5, pattern: /\A\d+\z/
+field :card_security_code, maxlength: 5, pattern: /\A\d+\z/
 ```
 
 If you want to validate that the field value belongs to a set of predefined
@@ -157,8 +159,9 @@ allow multiple values. For example:
 field :colour, multiple: true, values: Colour.keys
 ```
 
-Unlike all the other examples so far, reading the attribute that corresponds
-to this field will return an array of strings instead of a single string.
+Note that unlike all the other examples so far, reading the attribute
+that corresponds to this field will return an array of strings instead
+of a single string.
 
 Sometimes you'll only want the field to be defined if some condition is true.
 The condition may depend on the state of other form fields, or some external
@@ -191,8 +194,8 @@ and validated if the `same_address` checkbox is checked.
 Validation errors can be a frustrating experience for end users, so ideally
 we want to [be liberal in what we accept](http://en.wikipedia.org/wiki/Jon_Postel#Postel.27s_Law),
 but at the same time ensuring that data is consistently formatted to make it
-easy for us to process. Meet the `scrub` option, which can be used to specify
-methods for "cleaning" input data before validation. For example:
+easy for us to process. The `scrub` option can be used to specify methods for
+"cleaning" input data before validation. For example:
 
 ```ruby
 field :postcode, scrub: [:strip, :squeeze, :upcase]
@@ -200,15 +203,14 @@ field :postcode, scrub: [:strip, :squeeze, :upcase]
 
 The input for this field will have leading/trailing whitespace stripped,
 double (or more) spaces squeezed, and the result upcased automatically.
-
-In order to define a custom scrub method just add a symbol/proc entry to
-the `Formeze.scrub_methods` hash.
+Custom scrub methods can be defined by adding a symbol/proc entry to the
+`Formeze.scrub_methods` hash.
 
 
 Rails usage
 -----------
 
-This is the basic pattern for using a formeze form in a rails controller:
+This is the basic pattern for using a formeze form in a Rails controller:
 
 ```ruby
 form = SomeForm.new
@@ -222,7 +224,7 @@ end
 ```
 
 Formeze will automatically ignore the "utf8" and "authenticity_token"
-parameters that Rails uses, so you don't have to handle those manually.
+parameters that Rails uses.
 
 
 Sinatra usage
