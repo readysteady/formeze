@@ -30,6 +30,8 @@ module Formeze
 
         yield error(:too_long, 'is too long') if too_long?(value)
 
+        yield error(:too_short, 'is too short') if too_short?(value)
+
         yield error(:no_match, 'is invalid') if no_match?(value)
 
         yield error(:bad_value, 'is invalid') if values? && !values.include?(value)
@@ -68,6 +70,10 @@ module Formeze
 
     def too_long?(value)
       too_many_characters?(value) || too_many_words?(value)
+    end
+
+    def too_short?(value)
+      @options.has_key?(:minlength) && value.chars.count < @options.fetch(:minlength)
     end
 
     def too_many_characters?(value)
