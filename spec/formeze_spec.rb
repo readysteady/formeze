@@ -244,6 +244,23 @@ describe 'FormWithCharacterLimitedField after parsing input with too many charac
   end
 end
 
+class FormWithMaxLengthField < Formeze::Form
+  field :title, :maxlength => 16
+end
+
+describe 'FormWithMaxLengthField after parsing input with too many characters' do
+  before do
+    @form = FormWithMaxLengthField.new
+    @form.parse('title=This+Title+Will+Be+Too+Long')
+  end
+
+  describe 'valid query method' do
+    it 'returns false' do
+      @form.valid?.must_equal(false)
+    end
+  end
+end
+
 class FormWithMinLengthField < Formeze::Form
   field :title, :minlength => 8
 end

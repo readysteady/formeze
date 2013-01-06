@@ -77,7 +77,15 @@ module Formeze
     end
 
     def too_many_characters?(value)
-      value.chars.count > @options.fetch(:char_limit) { 64 }
+      if @options.has_key?(:maxlength)
+        value.chars.count > @options.fetch(:maxlength)
+      elsif @options.has_key?(:char_limit)
+        Kernel.warn '[formeze] :char_limit option is deprecated, please use :maxlength instead'
+
+        value.chars.count > @options.fetch(:char_limit)
+      else
+        value.chars.count > 64
+      end
     end
 
     def too_many_words?(value)
