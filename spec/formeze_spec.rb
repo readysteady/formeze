@@ -628,7 +628,7 @@ describe 'FormClassWithExplicitSetupCall' do
   end
 
   it 'includes the formeze class methods and instance methods' do
-    singleton_class = if @form.respond_to?(:singleton_class)
+    singleton_class = if @form_class.respond_to?(:singleton_class)
       @form_class.singleton_class
     else
       (class << @form_class; self; end)
