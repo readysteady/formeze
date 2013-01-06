@@ -132,7 +132,9 @@ module Formeze
   module ArrayAttrAccessor
     def array_attr_reader(name)
       define_method(name) do
-        Array(instance_variable_get(:"@#{name}"))
+        ivar = :"@#{name}"
+
+        instance_variable_defined?(ivar) ? Array(instance_variable_get(ivar)) : []
       end
     end
 
@@ -140,7 +142,7 @@ module Formeze
       define_method(:"#{name}=") do |value|
         ivar = :"@#{name}"
 
-        instance_variable_set(ivar, Array(instance_variable_get(ivar)) + [value])
+        instance_variable_set(ivar, send(name) + [value])
       end
     end
 
