@@ -1,5 +1,8 @@
-Formeze: A little library for handling form data/input
-======================================================
+formeze
+=======
+
+
+A little library for handling form data/input.
 
 
 Motivation
