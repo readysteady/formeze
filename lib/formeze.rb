@@ -16,6 +16,10 @@ module Formeze
 
     def initialize(name, options = {})
       @name, @options = name, options
+
+      if options.has_key?(:word_limit)
+        Kernel.warn '[formeze] :word_limit option is deprecated, please use custom validation instead'
+      end
     end
 
     def validate(value, form)
