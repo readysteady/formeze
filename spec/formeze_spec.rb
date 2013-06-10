@@ -227,23 +227,6 @@ describe 'FormWithFieldThatCanHaveMultipleLines after parsing input containing n
   end
 end
 
-class FormWithCharacterLimitedField < Formeze::Form
-  field :title, :char_limit => 16
-end
-
-describe 'FormWithCharacterLimitedField after parsing input with too many characters' do
-  before do
-    @form = FormWithCharacterLimitedField.new
-    @form.parse('title=This+Title+Will+Be+Too+Long')
-  end
-
-  describe 'valid query method' do
-    it 'returns false' do
-      @form.valid?.must_equal(false)
-    end
-  end
-end
-
 class FormWithMaxLengthField < Formeze::Form
   field :title, :maxlength => 16
 end
