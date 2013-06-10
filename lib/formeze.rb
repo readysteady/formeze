@@ -238,7 +238,9 @@ module Formeze
         %w(utf8 authenticity_token).each { |field_key| form_data.delete(field_key) }
       end
 
-      raise KeyError unless form_data.empty?
+      unless form_data.empty?
+        raise KeyError, "unexpected form keys: #{form_data.keys.sort.join(', ')}"
+      end
 
       self.class.checks.zip(self.class.errors) do |check, message|
         instance_eval(&check) ? next : error!(message)

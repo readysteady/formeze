@@ -38,8 +38,10 @@ describe 'FormWithField' do
       proc { @form.parse('title=foo&title=bar') }.must_raise(Formeze::ValueError)
     end
 
-    it 'raises an exception when there is an unexpected key' do
-      proc { @form.parse('title=Untitled&foo=bar') }.must_raise(Formeze::KeyError)
+    it 'raises an exception when the data contains unexpected keys' do
+      exception = proc { @form.parse('title=Untitled&foo=bar&baz=') }.must_raise(Formeze::KeyError)
+
+      exception.message.must_equal('unexpected form keys: baz, foo')
     end
   end
 
