@@ -500,26 +500,6 @@ describe 'FormWithHaltingCondition after parsing input with same_address set and
   end
 end
 
-class FormWithCustomValidation < Formeze::Form
-  field :email
-
-  check { email.include?(?@) }
-  error 'Email is invalid'
-end
-
-describe 'FormWithCustomValidation after parsing invalid input' do
-  before do
-    @form = FormWithCustomValidation.new
-    @form.parse('email=alice')
-  end
-
-  describe 'valid query method' do
-    it 'returns false' do
-      @form.valid?.must_equal(false)
-    end
-  end
-end
-
 class FormWithOptionalKey < Formeze::Form
   field :accept_terms, :values => %w(true), :key_required => false
 end
@@ -550,6 +530,154 @@ describe 'FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues after parsing blan
   describe 'valid query method' do
     it 'returns true' do
       @form.valid?.must_equal(true)
+    end
+  end
+end
+
+module EmailAddress
+  def self.valid?(address)
+    address.include?('@')
+  end
+end
+
+class FormWithCustomEmailValidation < Formeze::Form
+  field :email
+
+  validates :email, &EmailAddress.method(:valid?)
+end
+
+describe 'FormWithCustomEmailValidation after parsing invalid input' do
+  before do
+    @form = FormWithCustomEmailValidation.new
+    @form.parse('email=alice')
+  end
+
+  describe 'valid query method' do
+    it 'returns false' do
+      @form.valid?.must_equal(false)
+    end
+  end
+
+  describe 'errors method' do
+    it 'includes a generic error message for the named field' do
+      @form.errors.map(&:to_s).must_include('Email is invalid')
+    end
+  end
+
+  describe 'errors_on query method' do
+    it 'returns true when given the field name' do
+      @form.errors_on?(:email).must_equal(true)
+    end
+  end
+end
+
+describe 'FormWithCustomEmailValidation after parsing blank input' do
+  before do
+    @form = FormWithCustomEmailValidation.new
+    @form.parse('email=')
+  end
+
+  describe 'errors method' do
+    it 'will not include the custom validation error message' do
+      @form.errors.map(&:to_s).wont_include('Email is invalid')
+    end
+  end
+end
+
+class FormWithCustomPasswordConfirmationCheck < Formeze::Form
+  field :password
+  field :password_confirmation
+
+  validates :password_confirmation, error: :does_not_match do
+    password_confirmation == password
+  end
+end
+
+describe 'FormWithCustomPasswordConfirmationCheck after parsing invalid input' do
+  before do
+    @form = FormWithCustomPasswordConfirmationCheck.new
+    @form.parse('password=foo&password_confirmation=bar')
+  end
+
+  describe 'valid query method' do
+    it 'returns false' do
+      @form.valid?.must_equal(false)
+    end
+  end
+
+  describe 'errors method' do
+    it 'includes a generic error message for the named field' do
+      @form.errors.map(&:to_s).must_include('Password confirmation is invalid')
+    end
+  end
+
+  describe 'errors_on query method' do
+    it 'returns true when given the field name' do
+      @form.errors_on?(:password_confirmation).must_equal(true)
+    end
+  end
+end
+
+class FormWithCustomMinimumSpendValidation < Formeze::Form
+  field :minimum_spend
+
+  field :fixed_discount, required: false, blank: nil
+
+  validates :minimum_spend, :when => :fixed_discount? do
+    minimum_spend.to_f > 0
+  end
+
+  def fixed_discount?
+    !fixed_discount.nil?
+  end
+end
+
+describe 'FormWithCustomMinimumSpendValidation after parsing valid input' do
+  before do
+    @form = FormWithCustomMinimumSpendValidation.new
+    @form.parse('minimum_spend=0.00&fixed_discount=')
+  end
+
+  describe 'valid query method' do
+    it 'returns true' do
+      @form.valid?.must_equal(true)
+    end
+  end
+
+  describe 'errors method' do
+    it 'returns an empty array' do
+      @form.errors.must_be_empty
+    end
+  end
+
+  describe 'errors_on query method' do
+    it 'returns false when given the field name' do
+      @form.errors_on?(:minimum_spend).must_equal(false)
+    end
+  end
+end
+
+describe 'FormWithCustomMinimumSpendValidation after parsing invalid input' do
+  before do
+    @form = FormWithCustomMinimumSpendValidation.new
+    @form.parse('minimum_spend=0.00&fixed_discount=10%')
+  end
+
+  describe 'valid query method' do
+    it 'returns false' do
+      @form.valid?.must_equal(false)
+    end
+  end
+
+  describe 'errors method' do
+    it 'includes a generic error message for the named field' do
+      @form.errors.map(&:to_s).must_include('Minimum spend is invalid')
+    end
+  end
+
+  describe 'errors_on query method' do
+    it 'returns true when given the field name' do
+      @form.errors_on?(:minimum_spend).must_equal(true)
     end
   end
 end
@@ -590,6 +718,22 @@ describe 'I18n integration' do
     form = FormWithField.new
     form.parse('title=')
     form.errors.first.to_s.must_equal('Title cannot be blank')
+  end
+
+  it 'provides i18n support for overriding the default custom validation error message' do
+    I18n.backend.store_translations :en, {:formeze => {:errors => {:invalid => 'is not valid'}}}
+
+    form = FormWithCustomEmailValidation.new
+    form.parse('email=alice')
+    form.errors.first.to_s.must_equal('Email is not valid')
+  end
+
+  it 'provides i18n support for specifying custom validation error messages' do
+    I18n.backend.store_translations :en, {:formeze => {:errors => {:does_not_match => 'does not match'}}}
+
+    form = FormWithCustomPasswordConfirmationCheck.new
+    form.parse('password=foo&password_confirmation=bar')
+    form.errors.first.to_s.must_equal('Password confirmation does not match')
   end
 
   it 'provides i18n support for specifying field labels globally' do

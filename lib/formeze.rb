@@ -22,26 +22,26 @@ module Formeze
       value = Formeze.scrub(value, @options[:scrub])
 
       if value !~ /\S/
-        yield error(:required, 'is required') if required?
+        form.add_error(self, error(:required, 'is required')) if required?
 
         form.send(:"#{name}=", blank_value? ? blank_value : value)
       else
-        yield error(:not_multiline, 'cannot contain newlines') if !multiline? && value.lines.count > 1
+        form.add_error(self, error(:not_multiline, 'cannot contain newlines')) if !multiline? && value.lines.count > 1
 
-        yield error(:too_long, 'is too long') if too_long?(value)
+        form.add_error(self, error(:too_long, 'is too long')) if too_long?(value)
 
-        yield error(:too_short, 'is too short') if too_short?(value)
+        form.add_error(self, error(:too_short, 'is too short')) if too_short?(value)
 
-        yield error(:no_match, 'is invalid') if no_match?(value)
+        form.add_error(self, error(:no_match, 'is invalid')) if no_match?(value)
 
-        yield error(:bad_value, 'is invalid') if values? && !values.include?(value)
+        form.add_error(self, error(:bad_value, 'is invalid')) if values? && !values.include?(value)
 
         form.send(:"#{name}=", value)
       end
     end
 
-    def error(i18n_key, default)
-      translate(i18n_key, :scope => [:formeze, :errors], :default => default)
+    def error(key, default)
+      Formeze.translate(key, :scope => [:formeze, :errors], :default => default)
     end
 
     def key
@@ -53,7 +53,7 @@ module Formeze
     end
 
     def label
-      @options.fetch(:label) { translate(name, :scope => [:formeze, :labels], :default => Label.new(name)) }
+      @options.fetch(:label) { Formeze.translate(name, :scope => [:formeze, :labels], :default => Label.new(name)) }
     end
 
     def required?
@@ -119,12 +119,38 @@ module Formeze
     def defined_unless
       @options.fetch(:defined_unless)
     end
+  end
 
-    def translate(key, options)
-      if defined?(I18n)
-        I18n.translate(key, options)
-      else
-        options.fetch(:default)
+  class Validation
+    def initialize(field, options, &block)
+      @field, @options, @block = field, options, block
+    end
+
+    def error_key
+      @options.fetch(:error) { :invalid }
+    end
+
+    def error_message
+      Formeze.translate(error_key, :scope => [:formeze, :errors], :default => 'is invalid')
+    end
+
+    def validates?(form)
+      @options.has_key?(:when) ? form.instance_eval(&@options[:when]) : true
+    end
+
+    def value?(form)
+      form.send(@field.name) =~ /\S/
+    end
+
+    def validate(form)
+      if validates?(form) && value?(form)
+        return_value = if @block.arity == 1
+          @block.call(form.send(@field.name))
+        else
+          form.instance_eval(&@block)
+        end
+
+        form.add_error(@field, error_message) unless return_value
       end
     end
   end
@@ -171,20 +197,14 @@ module Formeze
       end
     end
 
-    def checks
-      @checks ||= []
+    def validations
+      @validations ||= []
     end
 
-    def check(&block)
-      checks << block
-    end
+    def validates(field_name, options = {}, &block)
+      field = fields.detect { |f| f.name == field_name }
 
-    def errors
-      @errors ||= []
-    end
-
-    def error(message)
-      errors << message
+      validations << Validation.new(field, options, &block)
     end
 
     def parse(encoded_form_data)
@@ -228,23 +248,31 @@ module Formeze
         end
 
         values.each do |value|
-          field.validate(value, self) do |error|
-            error!("#{field.label} #{error}", field.name)
-          end
+          field.validate(value, self)
         end
       end
 
       if defined?(Rails)
-        %w(utf8 authenticity_token).each { |field_key| form_data.delete(field_key) }
+        %w(utf8 authenticity_token).each do |key|
+          form_data.delete(key)
+        end
       end
 
       unless form_data.empty?
         raise KeyError, "unexpected form keys: #{form_data.keys.sort.join(', ')}"
       end
 
-      self.class.checks.zip(self.class.errors) do |check, message|
-        instance_eval(&check) ? next : error!(message)
+      self.class.validations.each do |validation|
+        validation.validate(self)
       end
+    end
+
+    def add_error(field, message)
+      error = ValidationError.new("#{field.label} #{message}")
+
+      errors << error
+
+      field_errors[field.name] << error
     end
 
     def valid?
@@ -291,14 +319,6 @@ module Formeze
     def field_errors
       @field_errors ||= Hash.new { |h, k| h[k] = [] }
     end
-
-    def error!(message, field_name = nil)
-      error = ValidationError.new(message)
-
-      errors << error
-
-      field_errors[field_name] << error unless field_name.nil?
-    end
   end
 
   def self.scrub_methods
@@ -315,6 +335,10 @@ module Formeze
     Array(method_names).inject(input) do |tmp, method_name|
       scrub_methods.fetch(method_name).call(tmp)
     end
+  end
+
+  def self.translate(key, options)
+    defined?(I18n) ? I18n.translate(key, options) : options.fetch(:default)
   end
 
   def self.setup(form)
