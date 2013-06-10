@@ -265,12 +265,14 @@ module Formeze
       field_errors[field_name]
     end
 
-    def to_hash
+    def to_h
       self.class.fields.inject({}) do |hash, field|
         hash[field.name] = send(field.name)
         hash
       end
     end
+
+    alias_method :to_hash, :to_h
 
     private
 

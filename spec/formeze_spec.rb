@@ -105,6 +105,12 @@ describe 'FormWithField after parsing valid input' do
     end
   end
 
+  describe 'to_h method' do
+    it 'returns a hash containing the field name and its value' do
+      @form.to_h.must_equal({:title => 'Untitled'})
+    end
+  end
+
   describe 'to_hash method' do
     it 'returns a hash containing the field name and its value' do
       @form.to_hash.must_equal({:title => 'Untitled'})
