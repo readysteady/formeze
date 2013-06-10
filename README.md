@@ -210,14 +210,93 @@ Custom scrub methods can be defined by adding a symbol/proc entry to the
 `Formeze.scrub_methods` hash.
 
 
+Custom validation
+-----------------
+
+You may need additional validation logic beyond what the field options
+described above provide, such as validating the format of a field without
+using a regular expression, validating that two fields are equal etc.
+This can be accomplished using the `validates` class method. Pass the
+name of the field to be validated, and a block/proc that encapsulates
+the validation logic. For example:
+
+```ruby
+class ExampleForm < Formeze::Form
+  field :email
+
+  validates :email, &EmailAddress.method(:valid?)
+end
+```
+
+If the block/proc takes no arguments then it will be evaluated in the
+scope of the form instance, which gives you access to the values of other
+fields (and methods defined on the form). For example:
+
+```ruby
+class ExampleForm < Formeze::Form
+  field :password
+  field :password_confirmation
+
+  validates :password_confirmation do
+    password_confirmation == password
+  end
+end
+```
+
+Specify the `when` option with a proc to peform the validation conditionally.
+Similar to the `defined_if` and `defined_unless` field options, the proc is
+evaluated in the scope of the form instance. For example:
+
+```ruby
+class ExampleForm < Formeze::Form
+  field :business_name, :defined_if => :business_account?
+  field :vat_number, :defined_if => :business_account?
+
+  validates :vat_number, :when => :business_account? do
+    # ...
+  end
+
+  def initialize(account)
+    @account = account
+  end
+
+  def business_account?
+    @account.business?
+  end
+end
+```
+
+Specify the `error` option with a symbol to control which error the validation
+generates. The I18n integration described below can be used to specify the
+error message used, both for errors that are explicitly specified using this
+option, and the default "invalid" error. For example:
+
+```ruby
+class ExampleForm < Formeze::Form
+  field :email
+  field :password
+  field :password_confirmation
+
+  validates :email, &EmailAddress.method(:valid?)
+
+  validates :password_confirmation, :error => :does_not_match do
+    password_confirmation == password
+  end
+end
+```
+
+The error for the email validation would use the `formeze.errors.invalid`
+I18n key, defaulting to "is invalid". The error message for the password
+confirmation validation would use the `formeze.errors.does_not_match` key.
+
+
 Rails usage
 -----------
 
 This is the basic pattern for using a formeze form in a Rails controller:
 
 ```ruby
-form = SomeForm.new
-form.parse(request.raw_post)
+form = SomeForm.parse(request.raw_post)
 
 if form.valid?
   # do something with form data
@@ -237,8 +316,7 @@ Using formeze with sinatra is similar, the only difference is that there is
 no raw_post method on the request object so the body has to be read directly:
 
 ```ruby
-form = SomeForm.new
-form.parse(request.body.read)
+form = SomeForm.parse(request.body.read)
 
 if form.valid?
   # do something with form data
