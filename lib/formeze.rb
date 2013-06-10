@@ -121,6 +121,28 @@ module Formeze
     end
   end
 
+  class FieldSet
+    include Enumerable
+
+    def initialize
+      @fields, @index = [], {}
+    end
+
+    def each(&block)
+      @fields.each(&block)
+    end
+
+    def <<(field)
+      @fields << field
+
+      @index[field.name] = field
+    end
+
+    def [](field_name)
+      @index.fetch(field_name)
+    end
+  end
+
   class Validation
     def initialize(field, options, &block)
       @field, @options, @block = field, options, block
@@ -182,7 +204,7 @@ module Formeze
     include ArrayAttrAccessor
 
     def fields
-      @fields ||= []
+      @fields ||= FieldSet.new
     end
 
     def field(*args)
@@ -202,9 +224,7 @@ module Formeze
     end
 
     def validates(field_name, options = {}, &block)
-      field = fields.detect { |f| f.name == field_name }
-
-      validations << Validation.new(field, options, &block)
+      validations << Validation.new(fields[field_name], options, &block)
     end
 
     def parse(encoded_form_data)
