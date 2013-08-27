@@ -1,16 +1,6 @@
 require 'cgi'
 
 module Formeze
-  class Label
-    def initialize(name)
-      @name = name
-    end
-
-    def to_s
-      @name.to_s.tr('_', ' ').capitalize
-    end
-  end
-
   class Field
     attr_reader :name
 
@@ -53,7 +43,7 @@ module Formeze
     end
 
     def label
-      @options.fetch(:label) { Formeze.translate(name, :scope => [:formeze, :labels], :default => Label.new(name)) }
+      @options.fetch(:label) { Formeze.translate(name, :scope => [:formeze, :labels], :default => Formeze.label(name)) }
     end
 
     def required?
@@ -327,6 +317,10 @@ module Formeze
     def field_errors
       @field_errors ||= Hash.new { |h, k| h[k] = [] }
     end
+  end
+
+  def self.label(field_name)
+    field_name.to_s.tr('_', ' ').capitalize
   end
 
   def self.scrub_methods
