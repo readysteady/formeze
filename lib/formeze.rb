@@ -16,10 +16,6 @@ module Formeze
 
     def initialize(name, options = {})
       @name, @options = name, options
-
-      if options.has_key?(:word_limit)
-        Kernel.warn '[formeze] :word_limit option is deprecated, please use custom validation instead'
-      end
     end
 
     def validate(value, form)
@@ -73,19 +69,11 @@ module Formeze
     end
 
     def too_long?(value)
-      too_many_characters?(value) || too_many_words?(value)
+      value.chars.count > @options.fetch(:maxlength) { 64 }
     end
 
     def too_short?(value)
       @options.has_key?(:minlength) && value.chars.count < @options.fetch(:minlength)
-    end
-
-    def too_many_characters?(value)
-      value.chars.count > @options.fetch(:maxlength) { 64 }
-    end
-
-    def too_many_words?(value)
-      @options.has_key?(:word_limit) && value.scan(/\w+/).length > @options[:word_limit]
     end
 
     def no_match?(value)

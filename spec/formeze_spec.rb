@@ -269,23 +269,6 @@ describe 'FormWithMinLengthField after parsing input with too few characters' do
   end
 end
 
-class FormWithWordLimitedField < Formeze::Form
-  field :title, :word_limit => 2
-end
-
-describe 'FormWithWordLimitedField after parsing input with too many words' do
-  before do
-    @form = FormWithWordLimitedField.new
-    @form.parse('title=This+Title+Will+Be+Too+Long')
-  end
-
-  describe 'valid query method' do
-    it 'returns false' do
-      @form.valid?.must_equal(false)
-    end
-  end
-end
-
 class FormWithFieldThatMustMatchPattern < Formeze::Form
   field :number, :pattern => /\A\d+\z/
 end
