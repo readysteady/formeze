@@ -285,9 +285,10 @@ class ExampleForm < Formeze::Form
 end
 ```
 
-The error for the email validation would use the `formeze.errors.invalid`
-I18n key, defaulting to "is invalid". The error message for the password
-confirmation validation would use the `formeze.errors.does_not_match` key.
+The error for the email field validation would include the value of the
+`formeze.errors.invalid` I18n key, defaulting to "is invalid" if the I18n
+key does not exist. The error for the password_confirmation field validation
+would include the value of the `formeze.errors.does_not_match` I18n key.
 
 
 Rails usage
