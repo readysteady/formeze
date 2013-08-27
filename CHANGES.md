@@ -1,3 +1,10 @@
+# [v2.1.0](https://github.com/timcraft/formeze/tree/v2.1.0) (2013-08-27)
+
+  * Fixed that custom validation should only execute when there are no
+    existing errors on the associated field
+
+  * Removed :word_limit field option
+
 # [v2.0.0](https://github.com/timcraft/formeze/tree/v2.0.0) (2013-06-10)
 
   * Added new custom validation functionality
