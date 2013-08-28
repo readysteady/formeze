@@ -1,3 +1,8 @@
+# [v2.1.1](https://github.com/timcraft/formeze/tree/v2.1.1) (2013-08-28)
+
+  * Fixed that custom validation should not execute for optional fields
+    with blank values
+
 # [v2.1.0](https://github.com/timcraft/formeze/tree/v2.1.0) (2013-08-27)
 
   * Fixed that custom validation should only execute when there are no
