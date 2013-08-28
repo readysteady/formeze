@@ -665,6 +665,39 @@ describe 'FormWithCustomMinimumSpendValidation after parsing invalid input' do
   end
 end
 
+class FormWithOptionalFieldAndCustomValidation < Formeze::Form
+  field :website, :required => false
+
+  validates :website do
+    website =~ /\./ && website !~ /\s/
+  end
+end
+
+describe 'FormWithOptionalFieldAndCustomValidation after parsing blank input' do
+  before do
+    @form = FormWithOptionalFieldAndCustomValidation.new
+    @form.parse('website=')
+  end
+
+  describe 'valid query method' do
+    it 'returns true' do
+      @form.valid?.must_equal(true)
+    end
+  end
+
+  describe 'errors method' do
+    it 'returns an empty array' do
+      @form.errors.must_be_empty
+    end
+  end
+
+  describe 'errors_on query method' do
+    it 'returns false when given the field name' do
+      @form.errors_on?(:website).must_equal(false)
+    end
+  end
+end
+
 describe 'FormWithField on Rails' do
   before do
     @form = FormWithField.new

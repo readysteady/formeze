@@ -142,8 +142,16 @@ module Formeze
       @options.has_key?(:when) ? form.instance_eval(&@options[:when]) : true
     end
 
+    def field_value?(form)
+      form.send(@field.name) =~ /\S/
+    end
+
+    def field_errors?(form)
+      form.errors_on?(@field.name)
+    end
+
     def validate(form)
-      if validates?(form) && !form.errors_on?(@field.name)
+      if validates?(form) && field_value?(form) && !field_errors?(form)
         return_value = if @block.arity == 1
           @block.call(form.send(@field.name))
         else
