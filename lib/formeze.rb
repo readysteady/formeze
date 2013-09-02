@@ -214,6 +214,8 @@ module Formeze
     end
 
     def parse(encoded_form_data)
+      Kernel.warn '[formeze] the parse class method is deprecated and will be removed, please use the instance method instead'
+
       new.tap { |form| form.parse(encoded_form_data) }
     end
   end
