@@ -1,3 +1,16 @@
+# [v2.2.0](https://github.com/timcraft/formeze/tree/v2.2.0) (2013-09-02)
+
+  * The #fill and #parse instance methods now return self. So instead of this:
+
+        form = ExampleForm.new
+        form.parse(request.raw_post)
+
+    You can now do this:
+
+        form = ExampleForm.new.parse(request.raw_post)
+
+  * Deprecated the parse class method
+
 # [v2.1.1](https://github.com/timcraft/formeze/tree/v2.1.1) (2013-08-28)
 
   * Fixed that custom validation should not execute for optional fields
