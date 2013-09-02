@@ -233,6 +233,8 @@ module Formeze
           send(:"#{field.name}=", object.send(field.name))
         end
       end
+
+      return self
     end
 
     def parse(encoded_form_data)
@@ -271,6 +273,8 @@ module Formeze
       self.class.validations.each do |validation|
         validation.validate(self)
       end
+
+      return self
     end
 
     def add_error(field, message)

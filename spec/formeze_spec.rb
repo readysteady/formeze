@@ -43,6 +43,10 @@ describe 'FormWithField' do
 
       exception.message.must_equal('unexpected form keys: baz, foo')
     end
+
+    it 'returns self' do
+      @form.parse('title=Untitled').must_equal(@form)
+    end
   end
 
   describe 'fill method' do
@@ -58,6 +62,10 @@ describe 'FormWithField' do
 
       @form.fill(object)
       @form.title.must_equal('Untitled')
+    end
+
+    it 'returns self' do
+      @form.fill({:title => 'Untitled'}).must_equal(@form)
     end
   end
 end
