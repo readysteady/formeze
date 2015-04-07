@@ -2,7 +2,7 @@ formeze
 =======
 
 
-A little library for handling form data/input.
+A little Ruby library for handling form data/input.
 
 
 Motivation
