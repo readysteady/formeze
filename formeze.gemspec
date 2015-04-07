@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.description = 'A little library for handling form data/input'
   s.summary = 'See description'
   s.files = Dir.glob('{lib,spec}/**/*') + %w(README.md Rakefile.rb formeze.gemspec)
+  s.required_ruby_version = '>= 1.9.3'
   s.add_development_dependency('rake', '~> 10')
   s.add_development_dependency('i18n', '~> 0.6')
   s.add_development_dependency('minitest', '~> 5')
