@@ -212,12 +212,6 @@ module Formeze
     def validates(field_name, options = {}, &block)
       validations << Validation.new(fields[field_name], options, &block)
     end
-
-    def parse(encoded_form_data)
-      Kernel.warn '[formeze] the parse class method is deprecated and will be removed, please use the instance method instead'
-
-      new.tap { |form| form.parse(encoded_form_data) }
-    end
   end
 
   class KeyError < StandardError; end

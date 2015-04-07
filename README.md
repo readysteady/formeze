@@ -297,7 +297,7 @@ Rails usage
 This is the basic pattern for using a formeze form in a Rails controller:
 
 ```ruby
-form = SomeForm.parse(request.raw_post)
+form = SomeForm.new.parse(request.raw_post)
 
 if form.valid?
   # do something with form data
@@ -317,7 +317,7 @@ Using formeze with sinatra is similar, the only difference is that there is
 no raw_post method on the request object so the body has to be read directly:
 
 ```ruby
-form = SomeForm.parse(request.body.read)
+form = SomeForm.new.parse(request.body.read)
 
 if form.valid?
   # do something with form data
