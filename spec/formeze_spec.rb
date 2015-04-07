@@ -2,6 +2,8 @@ require 'minitest/autorun'
 require 'formeze'
 require 'i18n'
 
+I18n.available_locales = [:en]
+
 class FormWithField < Formeze::Form
   field :title
 end
