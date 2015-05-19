@@ -307,8 +307,8 @@ describe 'FormWithFieldThatCanHaveMultipleValues' do
   end
 
   describe 'colour method' do
-    it 'returns an empty array' do
-      @form.colour.must_equal([])
+    it 'returns nil' do
+      @form.colour.must_be_nil
     end
   end
 
@@ -367,8 +367,8 @@ describe 'FormWithFieldThatCanHaveMultipleValues after parsing input with no val
   end
 
   describe 'colour method' do
-    it 'returns an empty array' do
-      @form.colour.must_equal([])
+    it 'returns nil' do
+      @form.colour.must_be_nil
     end
   end
 

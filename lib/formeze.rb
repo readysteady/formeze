@@ -14,7 +14,7 @@ module Formeze
       if value !~ /\S/
         form.add_error(self, error(:required, 'is required')) if required?
 
-        form.send(:"#{name}=", blank_value? ? blank_value : value)
+        value = blank_value if blank_value?
       else
         form.add_error(self, error(:not_multiline, 'cannot contain newlines')) if !multiline? && value.lines.count > 1
 
@@ -25,9 +25,11 @@ module Formeze
         form.add_error(self, error(:no_match, 'is invalid')) if no_match?(value)
 
         form.add_error(self, error(:bad_value, 'is invalid')) if values? && !values.include?(value)
-
-        form.send(:"#{name}=", value)
       end
+
+      value = Array(form.send(name)).push(value) if multiple?
+
+      form.send(:"#{name}=", value)
     end
 
     def error(key, default)
@@ -163,32 +165,7 @@ module Formeze
     end
   end
 
-  module ArrayAttrAccessor
-    def array_attr_reader(name)
-      define_method(name) do
-        ivar = :"@#{name}"
-
-        instance_variable_defined?(ivar) ? Array(instance_variable_get(ivar)) : []
-      end
-    end
-
-    def array_attr_writer(name)
-      define_method(:"#{name}=") do |value|
-        ivar = :"@#{name}"
-
-        instance_variable_set(ivar, send(name) + [value])
-      end
-    end
-
-    def array_attr_accessor(name)
-      array_attr_reader(name)
-      array_attr_writer(name)
-    end
-  end
-
   module ClassMethods
-    include ArrayAttrAccessor
-
     def fields
       @fields ||= FieldSet.new
     end
@@ -198,11 +175,7 @@ module Formeze
 
       fields << field
 
-      if field.multiple?
-        array_attr_accessor field.name
-      else
-        attr_accessor field.name
-      end
+      attr_accessor field.name
     end
 
     def validations
