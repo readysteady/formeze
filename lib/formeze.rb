@@ -105,28 +105,6 @@ module Formeze
     end
   end
 
-  class FieldSet
-    include Enumerable
-
-    def initialize
-      @fields, @index = [], {}
-    end
-
-    def each(&block)
-      @fields.each(&block)
-    end
-
-    def <<(field)
-      @fields << field
-
-      @index[field.name] = field
-    end
-
-    def [](field_name)
-      @index.fetch(field_name)
-    end
-  end
-
   class Validation
     def initialize(field, options, &block)
       @field, @options, @block = field, options, block
@@ -167,13 +145,13 @@ module Formeze
 
   module ClassMethods
     def fields
-      @fields ||= FieldSet.new
+      @fields ||= {}
     end
 
     def field(*args)
       field = Field.new(*args)
 
-      fields << field
+      fields[field.name] = field
 
       attr_accessor field.name
     end
@@ -195,7 +173,7 @@ module Formeze
 
   module InstanceMethods
     def fill(object)
-      self.class.fields.each do |field|
+      self.class.fields.each_value do |field|
         if Hash === object && object.has_key?(field.name)
           send(:"#{field.name}=", object[field.name])
         elsif object.respond_to?(field.name)
@@ -209,7 +187,7 @@ module Formeze
     def parse(encoded_form_data)
       form_data = CGI.parse(encoded_form_data)
 
-      self.class.fields.each do |field|
+      self.class.fields.each_value do |field|
         next unless field_defined?(field)
 
         unless form_data.has_key?(field.key)
@@ -275,7 +253,7 @@ module Formeze
     end
 
     def to_h
-      self.class.fields.inject({}) do |hash, field|
+      self.class.fields.values.inject({}) do |hash, field|
         hash[field.name] = send(field.name)
         hash
       end
