@@ -253,9 +253,8 @@ module Formeze
     end
 
     def to_h
-      self.class.fields.values.inject({}) do |hash, field|
+      self.class.fields.values.each_with_object({}) do |field, hash|
         hash[field.name] = send(field.name)
-        hash
       end
     end
 
