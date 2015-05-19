@@ -98,8 +98,7 @@ describe 'FormWithField after parsing valid input' do
 
   describe 'errors method' do
     it 'returns an empty array' do
-      @form.errors.must_be_instance_of(Array)
-      @form.errors.must_be_empty
+      @form.errors.must_equal([])
     end
   end
 
@@ -111,9 +110,7 @@ describe 'FormWithField after parsing valid input' do
 
   describe 'errors_on method' do
     it 'returns an empty array when given the title field name' do
-      errors = @form.errors_on(:title)
-      errors.must_be_instance_of(Array)
-      errors.must_be_empty
+      @form.errors_on(:title).must_equal([])
     end
   end
 
@@ -311,8 +308,7 @@ describe 'FormWithFieldThatCanHaveMultipleValues' do
 
   describe 'colour method' do
     it 'returns an empty array' do
-      @form.colour.must_be_instance_of(Array)
-      @form.colour.must_be_empty
+      @form.colour.must_equal([])
     end
   end
 
@@ -347,9 +343,7 @@ describe 'FormWithFieldThatCanHaveMultipleValues after parsing input with multip
 
   describe 'colour method' do
     it 'returns an array containing the values' do
-      @form.colour.must_be_instance_of(Array)
-      @form.colour.must_include('black')
-      @form.colour.must_include('white')
+      @form.colour.must_equal(['black', 'white'])
     end
   end
 
@@ -374,8 +368,7 @@ describe 'FormWithFieldThatCanHaveMultipleValues after parsing input with no val
 
   describe 'colour method' do
     it 'returns an empty array' do
-      @form.colour.must_be_instance_of(Array)
-      @form.colour.must_be_empty
+      @form.colour.must_equal([])
     end
   end
 
