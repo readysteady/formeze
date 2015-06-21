@@ -1,3 +1,19 @@
+# [v3.0.0](https://github.com/timcraft/formeze/tree/v3.0.0) (2015-06-21)
+
+  * Added functionality for handling multipart form data. For example:
+
+        class ExampleForm < Formeze::Form
+          field :image, accept: 'image/jpg,image/png', maxsize: 1000
+        end
+
+    For this to work the request needs to be passed to the parse method:
+
+        ExampleForm.new.parse(request)
+
+  * Removed the deprecated parse class method
+
+  * Removed Ruby 1.8.7 compatibility
+
 # [v2.2.0](https://github.com/timcraft/formeze/tree/v2.2.0) (2013-09-02)
 
   * The #fill and #parse instance methods now return self. So instead of this:
