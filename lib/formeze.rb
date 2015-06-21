@@ -8,6 +8,22 @@ module Formeze
       @name, @options = name, options
     end
 
+    def validate_all(values, form)
+      size = 0
+
+      values.each do |value|
+        if String === value
+          validate(value, form)
+        else
+          validate_file(value, form)
+
+          size += value.size
+        end
+      end
+
+      form.add_error(self, error(:too_large, 'is too large')) if maxsize? && size > maxsize
+    end
+
     def validate(value, form)
       value = Formeze.scrub(value, @options[:scrub])
 
@@ -30,6 +46,20 @@ module Formeze
       value = Array(form.send(name)).push(value) if multiple?
 
       form.send(:"#{name}=", value)
+    end
+
+    def validate_file(object, form)
+      type = MIME::Types[object.content_type].first
+
+      filename_type = MIME::Types.type_for(object.original_filename).first
+
+      if type.nil? || type != filename_type || !accept.include?(type)
+        form.add_error(self, error(:not_accepted, 'is not an accepted file type'))
+      end
+
+      object = Array(form.send(name)).push(object) if multiple?
+
+      form.send(:"#{name}=", object)
     end
 
     def error(key, default)
@@ -58,6 +88,18 @@ module Formeze
 
     def multiple?
       @options.fetch(:multiple) { false }
+    end
+
+    def maxsize?
+      @options.has_key?(:maxsize)
+    end
+
+    def maxsize
+      @options.fetch(:maxsize)
+    end
+
+    def accept
+      @accept ||= @options.fetch(:accept).split(',').flat_map { |type| MIME::Types[type] }
     end
 
     def too_long?(value)
@@ -171,6 +213,16 @@ module Formeze
 
   class ValidationError < StandardError; end
 
+  class RequestCGI < CGI
+    def env_table
+      @options[:request].env
+    end
+
+    def stdinput
+      @options[:request].body
+    end
+  end
+
   module InstanceMethods
     def fill(object)
       self.class.fields.each_value do |field|
@@ -184,8 +236,12 @@ module Formeze
       return self
     end
 
-    def parse(encoded_form_data)
-      form_data = CGI.parse(encoded_form_data)
+    def parse(input)
+      form_data = if String === input
+        CGI.parse(input)
+      else
+        RequestCGI.new(request: input).params
+      end
 
       self.class.fields.each_value do |field|
         next unless field_defined?(field)
@@ -202,9 +258,7 @@ module Formeze
           raise ValueError unless field.multiple?
         end
 
-        values.each do |value|
-          field.validate(value, self)
-        end
+        field.validate_all(values, self)
       end
 
       if defined?(Rails)

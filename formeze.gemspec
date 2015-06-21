@@ -13,5 +13,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rake', '~> 10')
   s.add_development_dependency('i18n', '~> 0.6')
   s.add_development_dependency('minitest', '~> 5')
+  s.add_development_dependency('mime-types', '~> 2')
   s.require_path = 'lib'
 end

@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 require 'formeze'
 require 'i18n'
+require 'mime-types'
 
 I18n.available_locales = [:en]
 
@@ -688,6 +689,226 @@ describe 'FormWithOptionalFieldAndCustomValidation after parsing blank input' do
   describe 'errors_on query method' do
     it 'returns false when given the field name' do
       @form.errors_on?(:website).must_equal(false)
+    end
+  end
+end
+
+class FormWithFileField < Formeze::Form
+  field :file, :maxsize => 42, :accept => 'text/plain'
+end
+
+describe 'FormWithFileField after parsing multipart input' do
+  before do
+    @form = FormWithFileField.new
+
+    body = <<-EOS.gsub(/\n/, "\r\n")
+--AaB03x
+Content-Disposition: form-data; name="file"; filename="example.txt"
+Content-Type: text/plain
+
+contents
+--AaB03x--
+EOS
+
+    request = Struct.new(:body, :env).new(StringIO.new(body), {
+      'REQUEST_METHOD' => 'POST',
+      'CONTENT_TYPE' => 'multipart/form-data; boundary=AaB03x',
+      'CONTENT_LENGTH' => body.bytesize
+    })
+
+    @form.parse(request)
+  end
+
+  describe 'file method' do
+    it 'returns the value of the field' do
+      @form.file.must_be_instance_of(StringIO)
+      @form.file.original_filename.must_equal('example.txt')
+    end
+  end
+
+  describe 'valid query method' do
+    it 'returns true' do
+      @form.valid?.must_equal(true)
+    end
+  end
+
+  describe 'errors query method' do
+    it 'returns false' do
+      @form.errors?.must_equal(false)
+    end
+  end
+
+  describe 'errors method' do
+    it 'returns an empty array' do
+      @form.errors.must_equal([])
+    end
+  end
+
+  describe 'errors_on query method' do
+    it 'returns false when given the file field name' do
+      @form.errors_on?(:file).must_equal(false)
+    end
+  end
+
+  describe 'errors_on method' do
+    it 'returns an empty array when given the file field name' do
+      @form.errors_on(:file).must_equal([])
+    end
+  end
+end
+
+describe 'FormWithFileField after parsing blank multipart input' do
+  before do
+    @form = FormWithFileField.new
+
+    body = <<-EOS.gsub(/\n/, "\r\n")
+--AaB03x
+Content-Disposition: form-data; name="file"; filename=""
+Content-Type: application/octet-stream
+
+
+--AaB03x--
+EOS
+
+    request = Struct.new(:body, :env).new(StringIO.new(body), {
+      'REQUEST_METHOD' => 'POST',
+      'CONTENT_TYPE' => 'multipart/form-data; boundary=AaB03x',
+      'CONTENT_LENGTH' => body.bytesize
+    })
+
+    @form.parse(request)
+  end
+
+  describe 'errors query method' do
+    it 'returns true' do
+      @form.errors?.must_equal(true)
+    end
+  end
+
+  describe 'errors method' do
+    it 'returns an array containing a single error message' do
+      @form.errors.must_be_instance_of(Array)
+      @form.errors.length.must_equal(1)
+      @form.errors.first.to_s.must_equal('File is required')
+    end
+  end
+
+  describe 'errors_on query method' do
+    it 'returns true when given the file field name' do
+      @form.errors_on?(:file).must_equal(true)
+    end
+  end
+
+  describe 'errors_on method' do
+    it 'returns an array containing a single error message when given the file field name' do
+      errors = @form.errors_on(:file)
+      errors.must_be_instance_of(Array)
+      errors.length.must_equal(1)
+      errors.first.to_s.must_equal('File is required')
+    end
+  end
+end
+
+describe 'FormWithFileField after parsing multipart input with too much data' do
+  before do
+    @form = FormWithFileField.new
+
+    body = <<-EOS.gsub(/\n/, "\r\n")
+--AaB03x
+Content-Disposition: form-data; name="file"; filename="example.txt"
+Content-Type: text/plain
+
+The quick brown fox jumps over the lazy dog.
+--AaB03x--
+EOS
+
+    request = Struct.new(:body, :env).new(StringIO.new(body), {
+      'REQUEST_METHOD' => 'POST',
+      'CONTENT_TYPE' => 'multipart/form-data; boundary=AaB03x',
+      'CONTENT_LENGTH' => body.bytesize
+    })
+
+    @form.parse(request)
+  end
+
+  describe 'errors query method' do
+    it 'returns true' do
+      @form.errors?.must_equal(true)
+    end
+  end
+
+  describe 'errors method' do
+    it 'returns an array containing a single error message' do
+      @form.errors.must_be_instance_of(Array)
+      @form.errors.length.must_equal(1)
+      @form.errors.first.to_s.must_equal('File is too large')
+    end
+  end
+
+  describe 'errors_on query method' do
+    it 'returns true when given the file field name' do
+      @form.errors_on?(:file).must_equal(true)
+    end
+  end
+
+  describe 'errors_on method' do
+    it 'returns an array containing a single error message when given the file field name' do
+      errors = @form.errors_on(:file)
+      errors.must_be_instance_of(Array)
+      errors.length.must_equal(1)
+      errors.first.to_s.must_equal('File is too large')
+    end
+  end
+end
+
+describe 'FormWithFileField after parsing multipart input with an unacceptable content type' do
+  before do
+    @form = FormWithFileField.new
+
+    body = <<-EOS.gsub(/\n/, "\r\n")
+--AaB03x
+Content-Disposition: form-data; name="file"; filename="example.html"
+Content-Type: text/html
+
+<!DOCTYPE html> 
+--AaB03x--
+EOS
+
+    request = Struct.new(:body, :env).new(StringIO.new(body), {
+      'REQUEST_METHOD' => 'POST',
+      'CONTENT_TYPE' => 'multipart/form-data; boundary=AaB03x',
+      'CONTENT_LENGTH' => body.bytesize
+    })
+
+    @form.parse(request)
+  end
+
+  describe 'errors query method' do
+    it 'returns true' do
+      @form.errors?.must_equal(true)
+    end
+  end
+
+  describe 'errors method' do
+    it 'returns an array containing a single error message' do
+      @form.errors.must_be_instance_of(Array)
+      @form.errors.length.must_equal(1)
+      @form.errors.first.to_s.must_equal('File is not an accepted file type')
+    end
+  end
+
+  describe 'errors_on query method' do
+    it 'returns true when given the file field name' do
+      @form.errors_on?(:file).must_equal(true)
+    end
+  end
+
+  describe 'errors_on method' do
+    it 'returns an array containing a single error message when given the file field name' do
+      errors = @form.errors_on(:file)
+      errors.must_be_instance_of(Array)
+      errors.length.must_equal(1)
+      errors.first.to_s.must_equal('File is not an accepted file type')
     end
   end
 end
