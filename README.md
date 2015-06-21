@@ -36,15 +36,21 @@ class ExampleForm < Formeze::Form
 end
 ```
 
-This form can then be used to parse and validate input data like this:
+This form class can then be used to parse and validate input data from
+within a rails or sinatra action like this:
 
 ```ruby
-form = ExampleForm.new
+form = SomeForm.new.parse(request)
 
-form.parse('title=Title')
-
-form.title  # => "Title"
+if form.valid?
+  # do something with form data
+else
+  # display form.errors to user
+end
 ```
+
+Formeze will automatically ignore the "utf8" and "authenticity_token"
+parameters that Rails uses.
 
 If you prefer not to inherit from the `Formeze::Form` class then you can
 instead call the `Formeze.setup` method like this:
@@ -62,23 +68,21 @@ methods but will otherwise leave the object untouched (i.e. you can define
 your own initialization logic).
 
 
-Detecting errors
-----------------
+Validation errors
+-----------------
 
 Formeze distinguishes between validation errors (which are expected in the
 normal running of your application), and key/value errors (which most likely
-indicate either developer error, or form tampering).
-
-For the latter case, the `parse` method that formeze provides will raise a
-`Formeze::KeyError` or a `Formeze::ValueError` exception if the structure of
-the form data does not match the field definitions.
+indicate either developer error, or form tampering). For the latter case,
+the `parse` method that formeze provides will raise a `Formeze::KeyError`
+or a `Formeze::ValueError` exception if the structure of the form data
+does not match the field definitions.
 
 After calling `parse` you can check that the form is valid by calling the
 `#valid?` method. If it isn't you can call the `errors` method which will
-return an array of error messages to display to the end user.
-
-You can also use `errors_on?` and `errors_on` to check for and select error
-messages specific to a single field.
+return an array of error messages to display to the end user. You can also
+use `errors_on?` and `errors_on` to check for and select error messages
+specific to a single field.
 
 
 Field options
@@ -106,9 +110,9 @@ is not required, i.e. the value of the field can be blank/empty. For example:
 field :title, required: false
 ```
 
-To make it easy to integrate with your application you might want to return
-a different value for blank fields, such as nil, zero, or a "null" object.
-Use the `blank` option to specify this behaviour. For example:
+You might want to return a different value for blank fields, such as nil,
+zero, or a "null" object. Use the `blank` option to specify this behaviour.
+For example:
 
 ```ruby
 field :title, required: false, blank: nil
@@ -154,17 +158,13 @@ option to handle the case where the checkbox is unchecked. For example:
 field :accept_terms, values: %w(true), key_required: false
 ```
 
-Sometimes you'll have a field with multiple values. A multiple select input,
-a set of checkboxes. For this case you can specify the `multiple` option to
-allow multiple values. For example:
+Sometimes you'll have a field with multiple values, such as a multiple select
+input, or a set of checkboxes. For this case you can specify the `multiple`
+option to allow multiple values. For example:
 
 ```ruby
 field :colour, multiple: true, values: Colour.keys
 ```
-
-Note that unlike all the other examples so far, reading the attribute
-that corresponds to this field will return an array of strings instead
-of a single string.
 
 Sometimes you'll only want the field to be defined if some condition is true.
 The condition may depend on the state of other form fields, or some external
@@ -208,6 +208,22 @@ The input for this field will have leading/trailing whitespace stripped,
 double (or more) spaces squeezed, and the result upcased automatically.
 Custom scrub methods can be defined by adding a symbol/proc entry to the
 `Formeze.scrub_methods` hash.
+
+
+Multipart form data
+-------------------
+
+For file fields you can specify the accept and maxsize options, for example:
+
+```ruby
+class ExampleForm < Formeze::Form
+  field :image, accept: 'image/jpg,image/png', maxsize: 1000
+end
+```
+
+For this to work you need to make sure your application includes the
+[mime-types gem](https://rubygems.org/gems/mime-types), and that the
+form is submitted with the multipart/form-data mime type.
 
 
 Custom validation
@@ -291,49 +307,12 @@ key does not exist. The error for the password_confirmation field validation
 would include the value of the `formeze.errors.does_not_match` I18n key.
 
 
-Rails usage
------------
-
-This is the basic pattern for using a formeze form in a Rails controller:
-
-```ruby
-form = SomeForm.new.parse(request.raw_post)
-
-if form.valid?
-  # do something with form data
-else
-  # display form.errors to user
-end
-```
-
-Formeze will automatically ignore the "utf8" and "authenticity_token"
-parameters that Rails uses.
-
-
-Sinatra usage
--------------
-
-Using formeze with sinatra is similar, the only difference is that there is
-no raw_post method on the request object so the body has to be read directly:
-
-```ruby
-form = SomeForm.new.parse(request.body.read)
-
-if form.valid?
-  # do something with form data
-else
-  # display form.errors to user
-end
-```
-
-
-Integration with I18n
----------------------
+I18n integration
+----------------
 
 Formeze integrates with [I18n](http://edgeguides.rubyonrails.org/i18n.html)
 so that you can define custom error messages and field labels within your
 locales (useful both for localization, and when working with designers).
-
 For example, here is how you would change the "required" error message
 (which defaults to "is required"):
 
