@@ -10,11 +10,12 @@ Motivation
 
 Most web apps built for end users will need to process url-encoded form data.
 Registration forms, profile forms, checkout forms, contact forms, and forms
-for adding/editing application specific data. As developers we would like to
-process this data safely, to minimise the possibility of security holes
-within our application that could be exploited. Formeze adopts the approach
-of being "strict by default", forcing the application code to be explicit in
-what it accepts as input.
+for adding/editing application specific data.
+
+As developers we would like to process this data safely, to minimise the
+possibility of security holes within our application that could be exploited.
+Formeze adopts the approach of being "strict by default", forcing the application
+code to be explicit in what it accepts as input.
 
 
 Installation
@@ -31,16 +32,17 @@ Example usage
 Here is a minimal example, which defines a form with a single field:
 
 ```ruby
+require 'formeze'
+
 class ExampleForm < Formeze::Form
   field :title
 end
 ```
 
-This form class can then be used to parse and validate input data from
-within a rails or sinatra action like this:
+You can then parse and validate form data in Rails or Sinatra like this:
 
 ```ruby
-form = SomeForm.new.parse(request)
+form = ExampleForm.new.parse(request)
 
 if form.valid?
   # do something with form data
@@ -49,11 +51,10 @@ else
 end
 ```
 
-Formeze will automatically ignore the "utf8" and "authenticity_token"
-parameters that Rails uses.
+Formeze will automatically ignore the Rails "utf8" and "authenticity_token" parameters.
 
 If you prefer not to inherit from the `Formeze::Form` class then you can
-instead call the `Formeze.setup` method like this:
+instead call the `Formeze.setup` method on your classes like this:
 
 ```ruby
 class ExampleForm
@@ -79,10 +80,10 @@ or a `Formeze::ValueError` exception if the structure of the form data
 does not match the field definitions.
 
 After calling `parse` you can check that the form is valid by calling the
-`#valid?` method. If it isn't you can call the `errors` method which will
+`valid?` method. If it isn't you can call the `errors` method which will
 return an array of error messages to display to the end user. You can also
-use `errors_on?` and `errors_on` to check for and select error messages
-specific to a single field.
+use the `errors_on?` and `errors_on` methods to check for and select error
+messages specific to a single field.
 
 
 Field options
@@ -160,7 +161,7 @@ field :accept_terms, values: %w(true), key_required: false
 
 Sometimes you'll have a field with multiple values, such as a multiple select
 input, or a set of checkboxes. For this case you can specify the `multiple`
-option to allow multiple values. For example:
+option, for example:
 
 ```ruby
 field :colour, multiple: true, values: Colour.keys
@@ -213,7 +214,7 @@ Custom scrub methods can be defined by adding a symbol/proc entry to the
 Multipart form data
 -------------------
 
-For file fields you can specify the accept and maxsize options, for example:
+For file fields you can specify the `accept` and `maxsize` options, for example:
 
 ```ruby
 class ExampleForm < Formeze::Form
