@@ -925,10 +925,11 @@ describe 'FormWithField on Rails' do
   end
 
   describe 'parse method' do
-    it 'silently ignores the utf8 and authenticity_token parameters' do
-      @form.parse('utf8=%E2%9C%93&authenticity_token=5RMc3sPZdR%2BZz4onNS8NfK&title=Test')
+    it 'silently ignores the utf8, commit and authenticity_token parameters' do
+      @form.parse('utf8=%E2%9C%93&authenticity_token=5RMc3sPZdR%2BZz4onNS8NfK&title=Test&commit=Create')
       @form.wont_respond_to(:utf8)
       @form.wont_respond_to(:authenticity_token)
+      @form.wont_respond_to(:commit)
       @form.to_hash.must_equal({:title => 'Test'})
     end
   end
