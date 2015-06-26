@@ -262,7 +262,7 @@ module Formeze
       end
 
       if defined?(Rails)
-        %w(utf8 authenticity_token).each do |key|
+        %w(utf8 authenticity_token commit).each do |key|
           form_data.delete(key)
         end
       end
