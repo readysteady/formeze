@@ -78,6 +78,24 @@ module Formeze
       @options.fetch(:label) { Formeze.translate(name, :scope => [:formeze, :labels], :default => Formeze.label(name)) }
     end
 
+    def type
+      return if multiline? or multiple?
+      @options.fetch(:type) { "text" }
+    end
+
+    def placeholder
+      return if multiline? or multiple?
+      @options.fetch(:placeholder) { "" }
+    end
+
+    def rows
+      @options.fetch(:rows) { 10 }
+    end
+
+    def cols
+      @options.fetch(:cols) { 50 }
+    end
+
     def required?
       @options.fetch(:required) { true }
     end
