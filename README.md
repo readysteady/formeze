@@ -1,12 +1,10 @@
-formeze
-=======
+# formeze
 
 
 A little Ruby library for handling form data/input.
 
 
-Motivation
-----------
+## Motivation
 
 Most web apps built for end users will need to process url-encoded form data.
 Registration forms, profile forms, checkout forms, contact forms, and forms
@@ -18,16 +16,14 @@ Formeze adopts the approach of being "strict by default", forcing the applicatio
 code to be explicit in what it accepts as input.
 
 
-Installation
-------------
+## Installation
 
 ```
 $ gem install formeze
 ```
 
 
-Example usage
--------------
+## Example usage
 
 Here is a minimal example, which defines a form with a single field:
 
@@ -69,8 +65,7 @@ methods but will otherwise leave the object untouched (i.e. you can define
 your own initialization logic).
 
 
-Validation errors
------------------
+## Validation errors
 
 Formeze distinguishes between validation errors (which are expected in the
 normal running of your application), and key/value errors (which most likely
@@ -86,8 +81,7 @@ use the `errors_on?` and `errors_on` methods to check for and select error
 messages specific to a single field.
 
 
-Field options
--------------
+## Field options
 
 By default fields cannot be blank, they are limited to 64 characters,
 and they cannot contain newlines. These restrictions can be overridden
@@ -211,8 +205,7 @@ Custom scrub methods can be defined by adding a symbol/proc entry to the
 `Formeze.scrub_methods` hash.
 
 
-Multipart form data
--------------------
+## Multipart form data
 
 For file fields you can specify the `accept` and `maxsize` options, for example:
 
@@ -227,8 +220,7 @@ For this to work you need to make sure your application includes the
 form is submitted with the multipart/form-data mime type.
 
 
-Custom validation
------------------
+## Custom validation
 
 You may need additional validation logic beyond what the field options
 described above provide, such as validating the format of a field without
@@ -308,8 +300,7 @@ key does not exist. The error for the password_confirmation field validation
 would include the value of the `formeze.errors.does_not_match` I18n key.
 
 
-I18n integration
-----------------
+## I18n integration
 
 Formeze integrates with [I18n](http://edgeguides.rubyonrails.org/i18n.html)
 so that you can define custom error messages and field labels within your
