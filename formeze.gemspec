@@ -5,8 +5,8 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = ['Tim Craft']
   s.email = ['mail@timcraft.com']
-  s.homepage = 'http://github.com/timcraft/formeze'
-  s.description = 'A little Ruby library for handling form data/input'
+  s.homepage = 'http://github.com/readysteady/formeze'
+  s.description = 'A lightweight Ruby library for processing form data'
   s.summary = 'See description'
   s.files = Dir.glob('{lib,spec}/**/*') + %w(LICENSE.txt README.md Rakefile.rb formeze.gemspec)
   s.required_ruby_version = '>= 1.9.3'
