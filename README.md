@@ -1,6 +1,6 @@
 # formeze
 
-[![Gem Version](https://badge.fury.io/rb/formeze.svg)](https://badge.fury.io/rb/formeze) [![Build Status](https://api.travis-ci.org/timcraft/formeze.svg?branch=master)](https://travis-ci.org/timcraft/formeze)
+[![Gem Version](https://badge.fury.io/rb/formeze.svg)](https://badge.fury.io/rb/formeze) [![Build Status](https://api.travis-ci.org/readysteady/formeze.svg?branch=master)](https://travis-ci.org/readysteady/formeze)
 
 
 A lightweight Ruby library for processing form data.
