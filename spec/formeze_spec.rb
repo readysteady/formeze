@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'minitest/global_expectations'
 require 'formeze'
 require 'i18n'
 require 'mime-types'
