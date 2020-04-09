@@ -2,7 +2,23 @@
 require 'cgi'
 
 module Formeze
+  module Presence
+    REGEXP = /\S/
+
+    def present?(string)
+      string =~ REGEXP
+    end
+
+    def blank?(string)
+      string !~ REGEXP
+    end
+  end
+
+  private_constant :Presence
+
   class Field
+    include Presence
+
     attr_reader :name
 
     def initialize(name, options = {})
@@ -28,7 +44,7 @@ module Formeze
     def validate(value, form)
       value = Formeze.scrub(value, @options[:scrub])
 
-      if value !~ /\S/
+      if blank?(value)
         form.add_error(self, error(:required, 'is required')) if required?
 
         value = blank_value if blank_value?
@@ -149,6 +165,8 @@ module Formeze
   end
 
   class Validation
+    include Presence
+
     def initialize(field, options, &block)
       @field, @options, @block = field, options, block
     end
@@ -166,7 +184,7 @@ module Formeze
     end
 
     def field_value?(form)
-      form.send(@field.name) =~ /\S/
+      present?(form.send(@field.name))
     end
 
     def field_errors?(form)
