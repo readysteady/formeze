@@ -224,6 +224,8 @@ module Formeze
     end
   end
 
+  private_constant :RequestCGI
+
   module InstanceMethods
     def fill(object)
       self.class.fields.each_value do |field|
