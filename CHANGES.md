@@ -1,148 +1,156 @@
-# [v3.0.0](https://github.com/timcraft/formeze/tree/v3.0.0) (2015-06-21)
+# 3.1.0
 
-  * Added functionality for handling multipart form data. For example:
+* Added `'commit'` to the list of Rails form keys to ignore (#4)
 
-        class ExampleForm < Formeze::Form
-          field :image, accept: 'image/jpg,image/png', maxsize: 1000
-        end
+* Added frozen string literal comment
 
-    For this to work the request needs to be passed to the parse method:
+* Extracted private constants to reduce memory allocations
 
-        ExampleForm.new.parse(request)
+* Removed spec file from gem
 
-  * Removed the deprecated parse class method
+# 3.0.0
 
-  * Removed Ruby 1.8.7 compatibility
+* Added functionality for handling multipart form data. For example:
 
-# [v2.2.0](https://github.com/timcraft/formeze/tree/v2.2.0) (2013-09-02)
+      class ExampleForm < Formeze::Form
+        field :image, accept: 'image/jpg,image/png', maxsize: 1000
+      end
 
-  * The #fill and #parse instance methods now return self. So instead of this:
+  For this to work the request needs to be passed to the parse method:
 
-        form = ExampleForm.new
-        form.parse(request.raw_post)
+      ExampleForm.new.parse(request)
 
-    You can now do this:
+* Removed the deprecated parse class method
 
-        form = ExampleForm.new.parse(request.raw_post)
+* Removed Ruby 1.8.7 compatibility
 
-  * Deprecated the parse class method
+# 2.2.0
 
-# [v2.1.1](https://github.com/timcraft/formeze/tree/v2.1.1) (2013-08-28)
+* The #fill and #parse instance methods now return self. So instead of this:
 
-  * Fixed that custom validation should not execute for optional fields
-    with blank values
+      form = ExampleForm.new
+      form.parse(request.raw_post)
 
-# [v2.1.0](https://github.com/timcraft/formeze/tree/v2.1.0) (2013-08-27)
+  You can now do this:
 
-  * Fixed that custom validation should only execute when there are no
-    existing errors on the associated field
+      form = ExampleForm.new.parse(request.raw_post)
 
-  * Removed :word_limit field option
+* Deprecated the parse class method
 
-# [v2.0.0](https://github.com/timcraft/formeze/tree/v2.0.0) (2013-06-10)
+# 2.1.1
 
-  * Added new custom validation functionality
+* Fixed that custom validation should not execute for optional fields with blank values
 
-  * Removed existing (undocumented) custom validation functionality
+# 2.1.0
 
-  * KeyError now includes an error message when raised for unexpected keys
+* Fixed that custom validation should only execute when there are no existing errors on the associated field
 
-  * Added #to_h form instance method
+* Removed `:word_limit` field option
 
-  * Removed :char_limit field option
+# 2.0.0
 
-  * Deprecated :word_limit field option (use custom validation instead)
+* Added new custom validation functionality
 
-# [v1.9.1](https://github.com/timcraft/formeze/tree/v1.9.1) (2013-01-06)
+* Removed existing (undocumented) custom validation functionality
 
-  * Added :minlength field option
+* KeyError now includes an error message when raised for unexpected keys
 
-  * Added :maxlength field option
+* Added #to_h form instance method
 
-  * Deprecated :char_limit field option (use :maxlength instead)
+* Removed `:char_limit` field option
 
-# [v1.9.0](https://github.com/timcraft/formeze/tree/v1.9.0) (2012-11-22)
+* Deprecated `:word_limit` field option (use custom validation instead)
 
-  * Added :blank field option for specifying a null object to be used in place of blank input
+# 1.9.1
 
-# [v1.8.0](https://github.com/timcraft/formeze/tree/v1.8.0) (2012-11-16)
+* Added `:minlength` field option
 
-  * Added #fill instance method
+* Added `:maxlength` field option
 
-  * Improved handling of Rails utf8/authenticity_token parameters
+* Deprecated `:char_limit` field option (use `:maxlength` instead)
 
-# [v1.7.0](https://github.com/timcraft/formeze/tree/v1.7.0) (2012-11-13)
+# 1.9.0
 
-  * Ruby 1.8.7 compatibility
+* Added `:blank` field option for specifying a null object to be used in place of blank input
 
-  * Renamed Formeze::UserError to Formeze::ValidationError
+# 1.8.0
 
-  * Added #to_hash instance method
+* Added #fill instance method
 
-# [v1.6.0](https://github.com/timcraft/formeze/tree/v1.6.0) (2012-10-25)
+* Improved handling of Rails utf8/authenticity_token parameters
 
-  * Added #errors_on? instance method for checking if there are errors on a specific field
+# 1.7.0
 
-  * Added #errors_on instance method for accessing the errors on a specific field
+* Ruby 1.8.7 compatibility
 
-  * Added parse class method, so instead of this:
+* Renamed `Formeze::UserError` to `Formeze::ValidationError`
 
-        form = ExampleForm.new
-        form.parse(request.raw_post)
+* Added #to_hash instance method
 
-    You can now do this:
+# 1.6.0
 
-        form = ExampleForm.parse(request.raw_post)
+* Added #errors_on? instance method for checking if there are errors on a specific field
 
-# [v1.5.1](https://github.com/timcraft/formeze/tree/v1.5.1) (2012-10-22)
+* Added #errors_on instance method for accessing the errors on a specific field
 
-  * Added Formeze::Form class, so forms can now be defined like this:
+* Added parse class method, so instead of this:
 
-        class ExampleForm < Formeze::Form
-        end
+      form = ExampleForm.new
+      form.parse(request.raw_post)
 
-    The previous style of setup is still supported:
+  You can now do this:
 
-        class ExampleForm < SomeAncestorClass
-          Formeze.setup(self)
-        end
+      form = ExampleForm.parse(request.raw_post)
 
-# [v1.5.0](https://github.com/timcraft/formeze/tree/v1.5.0) (2012-10-08)
+# 1.5.1
 
-  * Added #errors? instance method
+* Added `Formeze::Form` class, so forms can now be defined like this:
 
-  * Added Formeze.scrub method so that the scrub methods can be re-used outside field validation
+      class ExampleForm < Formeze::Form
+      end
 
-# [v1.4.0](https://github.com/timcraft/formeze/tree/v1.4.0) (2012-08-21)
+  The previous style of setup is still supported:
 
-  * Added :scrub field option for cleaning up input data before validation
+      class ExampleForm < SomeAncestorClass
+        Formeze.setup(self)
+      end
 
-# [v1.3.0](https://github.com/timcraft/formeze/tree/v1.3.0) (2012-08-21)
+# 1.5.0
 
-  * Added functionality for overriding error messages via i18n
+* Added #errors? instance method
 
-  * Added functionality for setting field labels globally via i18n
+* Added `Formeze.scrub` method so that the scrub methods can be re-used outside field validation
 
-# [v1.2.0](https://github.com/timcraft/formeze/tree/v1.2.0) (2012-05-14)
+# 1.4.0
 
-  * Replaced experimental guard/halting functionality with :defined_if and :defined_unless field options
+* Added `:scrub` field option for cleaning up input data before validation
 
-# [v1.1.3](https://github.com/timcraft/formeze/tree/v1.1.3) (2012-04-10)
+# 1.3.0
 
-  * Fixed early return from guard/halting conditions
+* Added functionality for overriding error messages via i18n
 
-# [v1.1.2](https://github.com/timcraft/formeze/tree/v1.1.2) (2012-04-09)
+* Added functionality for setting field labels globally via i18n
 
-  * Fixed validation so that additional checks are skipped if the input is blank
+# 1.2.0
 
-# [v1.1.1](https://github.com/timcraft/formeze/tree/v1.1.1) (2012-04-09)
+* Replaced experimental guard/halting functionality with `:defined_if` and `:defined_unless` field options
 
-  * Added an error message for Formeze::KeyError exceptions
+# 1.1.3
 
-# [v1.1.0](https://github.com/timcraft/formeze/tree/v1.1.0) (2012-04-09)
+* Fixed early return from guard/halting conditions
 
-  * Changed behaviour of experimental guard conditions and added halting conditions with opposite behaviour
+# 1.1.2
 
-# [v1.0.0](https://github.com/timcraft/formeze/tree/v1.0.0) (2012-04-09)
+* Fixed validation so that additional checks are skipped if the input is blank
 
-  * First version!
+# 1.1.1
+
+* Added an error message for `Formeze::KeyError` exceptions
+
+# 1.1.0
+
+* Changed behaviour of experimental guard conditions and added halting conditions with opposite behaviour
+
+# 1.0.0
+
+* First version!
