@@ -11,4 +11,10 @@ Gem::Specification.new do |s|
   s.files = Dir.glob('lib/**/*.rb') + %w(CHANGES.md LICENSE.txt README.md formeze.gemspec)
   s.required_ruby_version = '>= 1.9.3'
   s.require_path = 'lib'
+  s.metadata = {
+    'homepage' => 'https://github.com/readysteady/formeze',
+    'source_code_uri' => 'https://github.com/readysteady/formeze',
+    'bug_tracker_uri' => 'https://github.com/readysteady/formeze/issues',
+    'changelog_uri' => 'https://github.com/readysteady/formeze/blob/master/CHANGES.md'
+  }
 end
