@@ -92,7 +92,7 @@ module Formeze
     end
 
     def maxsize?
-      @options.has_key?(:maxsize)
+      @options.key?(:maxsize)
     end
 
     def maxsize
@@ -108,15 +108,15 @@ module Formeze
     end
 
     def too_short?(value)
-      @options.has_key?(:minlength) && value.chars.count < @options.fetch(:minlength)
+      @options.key?(:minlength) && value.chars.count < @options.fetch(:minlength)
     end
 
     def no_match?(value)
-      @options.has_key?(:pattern) && value !~ @options[:pattern]
+      @options.key?(:pattern) && value !~ @options[:pattern]
     end
 
     def blank_value?
-      @options.has_key?(:blank)
+      @options.key?(:blank)
     end
 
     def blank_value
@@ -124,7 +124,7 @@ module Formeze
     end
 
     def values?
-      @options.has_key?(:values)
+      @options.key?(:values)
     end
 
     def values
@@ -132,7 +132,7 @@ module Formeze
     end
 
     def defined_if?
-      @options.has_key?(:defined_if)
+      @options.key?(:defined_if)
     end
 
     def defined_if
@@ -140,7 +140,7 @@ module Formeze
     end
 
     def defined_unless?
-      @options.has_key?(:defined_unless)
+      @options.key?(:defined_unless)
     end
 
     def defined_unless
@@ -162,7 +162,7 @@ module Formeze
     end
 
     def validates?(form)
-      @options.has_key?(:when) ? form.instance_eval(&@options[:when]) : true
+      @options.key?(:when) ? form.instance_eval(&@options[:when]) : true
     end
 
     def field_value?(form)
@@ -227,7 +227,7 @@ module Formeze
   module InstanceMethods
     def fill(object)
       self.class.fields.each_value do |field|
-        if Hash === object && object.has_key?(field.name)
+        if Hash === object && object.key?(field.name)
           send(:"#{field.name}=", object[field.name])
         elsif object.respond_to?(field.name)
           send(:"#{field.name}=", object.send(field.name))
@@ -247,7 +247,7 @@ module Formeze
       self.class.fields.each_value do |field|
         next unless field_defined?(field)
 
-        unless form_data.has_key?(field.key)
+        unless form_data.key?(field.key)
           next if field.multiple? || !field.key_required?
 
           raise KeyError, "missing form key: #{field.key}"
