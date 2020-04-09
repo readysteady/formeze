@@ -244,6 +244,10 @@ module Formeze
 
   private_constant :RequestCGI
 
+  RAILS_FORM_KEYS = %w[utf8 authenticity_token commit]
+
+  private_constant :RAILS_FORM_KEYS
+
   module InstanceMethods
     def fill(object)
       self.class.fields.each_value do |field|
@@ -283,7 +287,7 @@ module Formeze
       end
 
       if defined?(Rails)
-        %w(utf8 authenticity_token commit).each do |key|
+        RAILS_FORM_KEYS.each do |key|
           form_data.delete(key)
         end
       end
