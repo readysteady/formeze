@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.description = 'A lightweight Ruby library for processing form data'
   s.summary = 'See description'
   s.files = Dir.glob('lib/**/*.rb') + %w(CHANGES.md LICENSE.txt README.md formeze.gemspec)
-  s.required_ruby_version = '>= 1.9.3'
+  s.required_ruby_version = '>= 2.4.0'
   s.require_path = 'lib'
   s.metadata = {
     'homepage' => 'https://github.com/readysteady/formeze',
