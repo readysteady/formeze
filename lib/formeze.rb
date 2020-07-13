@@ -167,20 +167,22 @@ module Formeze
   class Validation
     include Presence
 
-    def initialize(field, options, &block)
-      @field, @options, @block = field, options, block
-    end
+    def initialize(field, **kwargs, &block)
+      @field = field
 
-    def error_key
-      @options.fetch(:error) { :invalid }
+      @error = kwargs[:error] || :invalid
+
+      @precondition = kwargs[:when]
+
+      @block = block
     end
 
     def error_message
-      Formeze.translate(error_key, scope: [:formeze, :errors], default: 'is invalid')
+      Formeze.translate(@error, scope: [:formeze, :errors], default: 'is invalid')
     end
 
     def validates?(form)
-      @options.key?(:when) ? form.instance_eval(&@options[:when]) : true
+      @precondition ? form.instance_eval(&@precondition) : true
     end
 
     def field_value?(form)
@@ -221,8 +223,8 @@ module Formeze
       @validations ||= []
     end
 
-    def validates(field_name, options = {}, &block)
-      validations << Validation.new(fields[field_name], options, &block)
+    def validates(field_name, **options, &block)
+      validations << Validation.new(fields[field_name], **options, &block)
     end
   end
 

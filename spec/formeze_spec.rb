@@ -567,7 +567,7 @@ class FormWithCustomPasswordConfirmationCheck < Formeze::Form
   field :password
   field :password_confirmation
 
-  validates :password_confirmation, :error => :does_not_match do
+  validates :password_confirmation, error: :does_not_match do
     password_confirmation == password
   end
 end
@@ -602,7 +602,7 @@ class FormWithCustomMinimumSpendValidation < Formeze::Form
 
   field :fixed_discount, :required => false, :blank => nil
 
-  validates :minimum_spend, :when => :fixed_discount? do
+  validates :minimum_spend, when: :fixed_discount? do
     minimum_spend.to_f > 0
   end
 
