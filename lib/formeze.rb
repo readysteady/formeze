@@ -92,7 +92,7 @@ module Formeze
     end
 
     def label
-      @options.fetch(:label) { Formeze.translate(name, scope: [:formeze, :labels], default: Formeze.label(name)) }
+      @options.fetch(:label) { Formeze.translate(name, scope: LABELS_SCOPE, default: Formeze.label(name)) }
     end
 
     def required?
@@ -381,6 +381,10 @@ module Formeze
   ERRORS_SCOPE = [:formeze, :errors].freeze
 
   private_constant :ERRORS_SCOPE
+
+  LABELS_SCOPE = [:formeze, :labels].freeze
+
+  private_constant :LABELS_SCOPE
 
   def self.translate(key, **options)
     defined?(I18n) ? I18n.translate(key, **options) : options.fetch(:default)
