@@ -602,7 +602,7 @@ class FormWithCustomMinimumSpendValidation < Formeze::Form
 
   field :fixed_discount, required: false, blank: nil
 
-  validates :minimum_spend, when: :fixed_discount? do
+  validates :minimum_spend, if: :fixed_discount? do
     minimum_spend.to_f > 0
   end
 

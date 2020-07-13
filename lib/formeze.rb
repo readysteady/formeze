@@ -172,7 +172,7 @@ module Formeze
 
       @error = kwargs[:error] || :invalid
 
-      @precondition = kwargs[:when]
+      @precondition = kwargs[:if]
 
       @block = block
     end
