@@ -80,7 +80,7 @@ module Formeze
     end
 
     def error(key, default)
-      Formeze.translate(key, :scope => [:formeze, :errors], :default => default)
+      Formeze.translate(key, scope: [:formeze, :errors], default: default)
     end
 
     def key
@@ -92,7 +92,7 @@ module Formeze
     end
 
     def label
-      @options.fetch(:label) { Formeze.translate(name, :scope => [:formeze, :labels], :default => Formeze.label(name)) }
+      @options.fetch(:label) { Formeze.translate(name, scope: [:formeze, :labels], default: Formeze.label(name)) }
     end
 
     def required?
@@ -176,7 +176,7 @@ module Formeze
     end
 
     def error_message
-      Formeze.translate(error_key, :scope => [:formeze, :errors], :default => 'is invalid')
+      Formeze.translate(error_key, scope: [:formeze, :errors], default: 'is invalid')
     end
 
     def validates?(form)
@@ -376,8 +376,8 @@ module Formeze
     end
   end
 
-  def self.translate(key, options)
-    defined?(I18n) ? I18n.translate(key, options) : options.fetch(:default)
+  def self.translate(key, **options)
+    defined?(I18n) ? I18n.translate(key, **options) : options.fetch(:default)
   end
 
   def self.setup(form)
