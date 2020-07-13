@@ -80,7 +80,7 @@ module Formeze
     end
 
     def error(key, default)
-      Formeze.translate(key, scope: [:formeze, :errors], default: default)
+      Formeze.translate(key, scope: ERRORS_SCOPE, default: default)
     end
 
     def key
@@ -178,7 +178,7 @@ module Formeze
     end
 
     def error_message
-      Formeze.translate(@error, scope: [:formeze, :errors], default: 'is invalid')
+      Formeze.translate(@error, scope: ERRORS_SCOPE, default: 'is invalid')
     end
 
     def validates?(form)
@@ -377,6 +377,10 @@ module Formeze
       scrub_methods.fetch(method_name).call(tmp)
     end
   end
+
+  ERRORS_SCOPE = [:formeze, :errors].freeze
+
+  private_constant :ERRORS_SCOPE
 
   def self.translate(key, **options)
     defined?(I18n) ? I18n.translate(key, **options) : options.fetch(:default)
