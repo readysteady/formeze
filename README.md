@@ -3,7 +3,7 @@
 ![Gem Version](https://badge.fury.io/rb/formeze.svg)
 ![Build Status](https://github.com/readysteady/formeze/workflows/Test/badge.svg)
 
-A lightweight Ruby library for processing form data.
+Ruby gem for validating form data.
 
 
 ## Motivation
@@ -18,14 +18,18 @@ Formeze adopts the approach of being "strict by default", forcing the applicatio
 code to be explicit in what it accepts as input.
 
 
-## Installation
+## Install
 
-```
-$ gem install formeze
-```
+Using Bundler:
+
+    $ bundle add formeze
+
+Using RubyGems:
+
+    $ gem install formeze
 
 
-## Example usage
+## Usage
 
 Here is a minimal example, which defines a form with a single field:
 
@@ -254,16 +258,16 @@ class ExampleForm < Formeze::Form
 end
 ```
 
-Specify the `when` option with a proc to peform the validation conditionally.
+Specify the `if` option with a proc to peform the validation conditionally.
 Similar to the `defined_if` and `defined_unless` field options, the proc is
 evaluated in the scope of the form instance. For example:
 
 ```ruby
 class ExampleForm < Formeze::Form
-  field :business_name, :defined_if => :business_account?
-  field :vat_number, :defined_if => :business_account?
+  field :business_name, defined_if: :business_account?
+  field :vat_number, defined_if: :business_account?
 
-  validates :vat_number, :when => :business_account? do
+  validates :vat_number, if: :business_account? do
     # ...
   end
 
@@ -290,7 +294,7 @@ class ExampleForm < Formeze::Form
 
   validates :email, &EmailAddress.method(:valid?)
 
-  validates :password_confirmation, :error => :does_not_match do
+  validates :password_confirmation, error: :does_not_match do
     password_confirmation == password
   end
 end
