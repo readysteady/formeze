@@ -1,3 +1,11 @@
+# 4.0.0
+
+* Removed support for older rubies. **Required ruby version is now 2.4.0**
+
+* Changed the code to use keyword arguments for options
+
+* Renamed the `when` validation option to `if`
+
 # 3.1.0
 
 * Added `'commit'` to the list of Rails form keys to ignore (#4)
