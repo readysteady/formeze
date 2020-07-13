@@ -185,7 +185,7 @@ describe 'FormWithField after parsing input containing newlines' do
 end
 
 class FormWithOptionalField < Formeze::Form
-  field :title, :required => false
+  field :title, required: false
 end
 
 describe 'FormWithOptionalField after parsing blank input' do
@@ -202,7 +202,7 @@ describe 'FormWithOptionalField after parsing blank input' do
 end
 
 class FormWithOptionalFieldUsingBlankOption < Formeze::Form
-  field :title, :required => false, :blank => 42
+  field :title, required: false, blank: 42
 end
 
 describe 'FormWithOptionalFieldUsingBlankOption after parsing blank input' do
@@ -219,7 +219,7 @@ describe 'FormWithOptionalFieldUsingBlankOption after parsing blank input' do
 end
 
 class FormWithFieldThatCanHaveMultipleLines < Formeze::Form
-  field :description, :multiline => true
+  field :description, multiline: true
 end
 
 describe 'FormWithFieldThatCanHaveMultipleLines after parsing input containing newlines' do
@@ -236,7 +236,7 @@ describe 'FormWithFieldThatCanHaveMultipleLines after parsing input containing n
 end
 
 class FormWithMaxLengthField < Formeze::Form
-  field :title, :maxlength => 16
+  field :title, maxlength: 16
 end
 
 describe 'FormWithMaxLengthField after parsing input with too many characters' do
@@ -253,7 +253,7 @@ describe 'FormWithMaxLengthField after parsing input with too many characters' d
 end
 
 class FormWithMinLengthField < Formeze::Form
-  field :title, :minlength => 8
+  field :title, minlength: 8
 end
 
 describe 'FormWithMinLengthField after parsing input with too few characters' do
@@ -270,7 +270,7 @@ describe 'FormWithMinLengthField after parsing input with too few characters' do
 end
 
 class FormWithFieldThatMustMatchPattern < Formeze::Form
-  field :number, :pattern => /\A\d+\z/
+  field :number, pattern: /\A\d+\z/
 end
 
 describe 'FormWithFieldThatMustMatchPattern after parsing input that matches the pattern' do
@@ -300,7 +300,7 @@ describe 'FormWithFieldThatMustMatchPattern after parsing input that does not ma
 end
 
 class FormWithFieldThatCanHaveMultipleValues < Formeze::Form
-  field :colour, :multiple => true
+  field :colour, multiple: true
 end
 
 describe 'FormWithFieldThatCanHaveMultipleValues' do
@@ -382,7 +382,7 @@ describe 'FormWithFieldThatCanHaveMultipleValues after parsing input with no val
 end
 
 class FormWithFieldThatCanOnlyHaveSpecifiedValues < Formeze::Form
-  field :answer, :values => %w(yes no)
+  field :answer, values: %w(yes no)
 end
 
 describe 'FormWithFieldThatCanOnlyHaveSpecifiedValues after parsing input with an invalid value' do
@@ -400,7 +400,7 @@ end
 
 class FormWithGuardCondition < Formeze::Form
   field :account_name
-  field :account_vat_number, :defined_if => proc { @business_account }
+  field :account_vat_number, defined_if: proc { @business_account }
 
   def initialize(business_account)
     @business_account = business_account
@@ -446,8 +446,8 @@ end
 
 class FormWithHaltingCondition < Formeze::Form
   field :delivery_address
-  field :same_address, :values => %w(yes no)
-  field :billing_address, :defined_unless => :same_address?
+  field :same_address, values: %w(yes no)
+  field :billing_address, defined_unless: :same_address?
 
   def same_address?
     same_address == 'yes'
@@ -480,7 +480,7 @@ describe 'FormWithHaltingCondition after parsing input with same_address set and
 end
 
 class FormWithOptionalKey < Formeze::Form
-  field :accept_terms, :values => %w(true), :key_required => false
+  field :accept_terms, values: %w(true), key_required: false
 end
 
 describe 'FormWithOptionalKey after parsing input without the key' do
@@ -497,7 +497,7 @@ describe 'FormWithOptionalKey after parsing input without the key' do
 end
 
 class FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues < Formeze::Form
-  field :size, :required => false, :values => %w(S M L XL)
+  field :size, required: false, values: %w(S M L XL)
 end
 
 describe 'FormWithOptionalFieldThatCanOnlyHaveSpecifiedValues after parsing blank input' do
@@ -600,7 +600,7 @@ end
 class FormWithCustomMinimumSpendValidation < Formeze::Form
   field :minimum_spend
 
-  field :fixed_discount, :required => false, :blank => nil
+  field :fixed_discount, required: false, blank: nil
 
   validates :minimum_spend, when: :fixed_discount? do
     minimum_spend.to_f > 0
@@ -662,7 +662,7 @@ describe 'FormWithCustomMinimumSpendValidation after parsing invalid input' do
 end
 
 class FormWithOptionalFieldAndCustomValidation < Formeze::Form
-  field :website, :required => false
+  field :website, required: false
 
   validates :website do
     website =~ /\./ && website !~ /\s/
@@ -695,7 +695,7 @@ describe 'FormWithOptionalFieldAndCustomValidation after parsing blank input' do
 end
 
 class FormWithFileField < Formeze::Form
-  field :file, :maxsize => 42, :accept => 'text/plain'
+  field :file, maxsize: 42, accept: 'text/plain'
 end
 
 describe 'FormWithFileField after parsing multipart input' do
@@ -979,8 +979,8 @@ describe 'I18n integration' do
 end
 
 class FormWithScrubbedFields < Formeze::Form
-  field :postcode, :scrub => [:strip, :squeeze, :upcase], :pattern => /\A[A-Z0-9]{2,4} [A-Z0-9]{3}\z/
-  field :bio, :scrub => [:strip, :squeeze_lines], :multiline => true
+  field :postcode, scrub: [:strip, :squeeze, :upcase], pattern: /\A[A-Z0-9]{2,4} [A-Z0-9]{3}\z/
+  field :bio, scrub: [:strip, :squeeze_lines], multiline: true
 end
 
 describe 'FormWithScrubbedFields' do

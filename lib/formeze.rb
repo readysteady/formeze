@@ -21,7 +21,7 @@ module Formeze
 
     attr_reader :name
 
-    def initialize(name, options = {})
+    def initialize(name, **options)
       @name, @options = name, options
     end
 
@@ -211,8 +211,8 @@ module Formeze
       @fields ||= {}
     end
 
-    def field(*args)
-      field = Field.new(*args)
+    def field(name, **options)
+      field = Field.new(name, **options)
 
       fields[field.name] = field
 
