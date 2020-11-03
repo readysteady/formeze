@@ -1,3 +1,7 @@
+# 4.0.1
+
+* Fixed outdated changelog_uri
+
 # 4.0.0
 
 * Removed support for older rubies. **Required ruby version is now 2.4.0**
