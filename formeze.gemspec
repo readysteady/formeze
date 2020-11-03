@@ -15,6 +15,6 @@ Gem::Specification.new do |s|
     'homepage' => 'https://github.com/readysteady/formeze',
     'source_code_uri' => 'https://github.com/readysteady/formeze',
     'bug_tracker_uri' => 'https://github.com/readysteady/formeze/issues',
-    'changelog_uri' => 'https://github.com/readysteady/formeze/blob/master/CHANGES.md'
+    'changelog_uri' => 'https://github.com/readysteady/formeze/blob/main/CHANGES.md'
   }
 end
