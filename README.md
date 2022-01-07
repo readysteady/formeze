@@ -1,7 +1,7 @@
 # formeze
 
 ![Gem Version](https://badge.fury.io/rb/formeze.svg)
-![Build Status](https://github.com/readysteady/formeze/workflows/Test/badge.svg)
+![Test Status](https://github.com/readysteady/formeze/actions/workflows/test.yml/badge.svg)
 
 Ruby gem for validating form data.
 
