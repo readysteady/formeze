@@ -763,7 +763,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
       input: body
     })
 
-    Rack::Request.new(env)
+    Rack::Request.new(env).tap(&:params)
   end
 
   context 'after parsing multipart input' do

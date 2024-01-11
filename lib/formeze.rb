@@ -240,7 +240,9 @@ module Formeze
     end
 
     def stdinput
-      @options[:request].body
+      @options[:request].body.tap do |body|
+        body.rewind if body.respond_to?(:rewind)
+      end
     end
   end
 
