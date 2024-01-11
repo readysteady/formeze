@@ -1,6 +1,7 @@
 require_relative '../lib/formeze'
 require 'i18n'
 require 'mime-types'
+require 'rack'
 
 I18n.available_locales = [:en]
 I18n.backend = I18n::Backend::Simple.new
@@ -754,6 +755,17 @@ RSpec.describe 'Form with maxsize option and accept option' do
 
   let(:form) { FormWithFileField.new }
 
+  def multipart_request(body)
+    env = Rack::MockRequest.env_for('/', {
+      'REQUEST_METHOD' => 'POST',
+      'CONTENT_TYPE' => 'multipart/form-data; boundary=AaB03x',
+      'CONTENT_LENGTH' => body.bytesize,
+      input: body
+    })
+
+    Rack::Request.new(env)
+  end
+
   context 'after parsing multipart input' do
     before do
       body = <<~EOS.gsub(/\n/, "\r\n")
@@ -765,13 +777,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
         --AaB03x--
       EOS
 
-      request = Struct.new(:body, :env).new(StringIO.new(body), {
-        'REQUEST_METHOD' => 'POST',
-        'CONTENT_TYPE' => 'multipart/form-data; boundary=AaB03x',
-        'CONTENT_LENGTH' => body.bytesize
-      })
-
-      form.parse(request)
+      form.parse(multipart_request(body))
     end
 
     describe '#file' do
@@ -823,13 +829,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
         --AaB03x--
       EOS
 
-      request = Struct.new(:body, :env).new(StringIO.new(body), {
-        'REQUEST_METHOD' => 'POST',
-        'CONTENT_TYPE' => 'multipart/form-data; boundary=AaB03x',
-        'CONTENT_LENGTH' => body.bytesize
-      })
-
-      form.parse(request)
+      form.parse(multipart_request(body))
     end
 
     describe '#errors?' do
@@ -873,13 +873,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
         --AaB03x--
       EOS
 
-      request = Struct.new(:body, :env).new(StringIO.new(body), {
-        'REQUEST_METHOD' => 'POST',
-        'CONTENT_TYPE' => 'multipart/form-data; boundary=AaB03x',
-        'CONTENT_LENGTH' => body.bytesize
-      })
-
-      form.parse(request)
+      form.parse(multipart_request(body))
     end
 
     describe '#errors?' do
@@ -923,13 +917,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
         --AaB03x--
       EOS
 
-      request = Struct.new(:body, :env).new(StringIO.new(body), {
-        'REQUEST_METHOD' => 'POST',
-        'CONTENT_TYPE' => 'multipart/form-data; boundary=AaB03x',
-        'CONTENT_LENGTH' => body.bytesize
-      })
-
-      form.parse(request)
+      form.parse(multipart_request(body))
     end
 
     describe '#errors?' do
