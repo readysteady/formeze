@@ -1,3 +1,7 @@
+# 4.1.0
+
+* Fixed compatibility with rack 3+
+
 # 4.0.1
 
 * Fixed outdated changelog_uri
