@@ -50,17 +50,21 @@ class Formeze::Field
   end
 
   def validate_file(object, form)
-    type = MIME::Types[object.content_type].first
-
-    filename_type = MIME::Types.type_for(object.original_filename).first
-
-    if type.nil? || type != filename_type || !accept.include?(type)
+    unless acceptable_file?(object)
       form.add_error(self, :not_accepted, 'is not an accepted file type')
     end
 
     object = Array(form.send(name)).push(object) if multiple?
 
     form.send(:"#{name}=", object)
+  end
+
+  def acceptable_file?(object)
+    type = MIME::Types[object.content_type].first
+
+    types = MIME::Types.type_for(object.original_filename)
+
+    accept.include?(type) && types.include?(type)
   end
 
   def key
