@@ -2,19 +2,7 @@
 require 'cgi'
 
 module Formeze
-  module Presence
-    REGEXP = /\S/
-
-    def present?(string)
-      string =~ REGEXP
-    end
-
-    def blank?(string)
-      string !~ REGEXP
-    end
-  end
-
-  private_constant :Presence
+  autoload :Presence, 'formeze/presence'
 
   class Field
     include Presence
