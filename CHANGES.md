@@ -1,3 +1,9 @@
+# 4.2.0
+
+* Fixed file validation for e.g. `.md` files sent as application/octet-stream
+
+* Fixed file validation for e.g. `.rtf` files sent as text/rtf
+
 # 4.1.0
 
 * Fixed compatibility with rack 3+
