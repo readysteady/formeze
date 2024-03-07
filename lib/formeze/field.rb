@@ -72,7 +72,7 @@ class Formeze::Field
   end
 
   def label
-    @options.fetch(:label) { Formeze.translate(name, scope: Formeze::LABELS_SCOPE, default: Formeze.label(name)) }
+    @options.fetch(:label) { Formeze::Labels.translate(name) }
   end
 
   def required?

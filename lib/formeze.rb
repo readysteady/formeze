@@ -5,6 +5,7 @@ module Formeze
   autoload :Field, 'formeze/field'
   autoload :Form, 'formeze/form'
   autoload :FormData, 'formeze/form_data'
+  autoload :Labels, 'formeze/labels'
   autoload :Presence, 'formeze/presence'
   autoload :Validation, 'formeze/validation'
 
@@ -164,12 +165,6 @@ module Formeze
     Array(method_names).inject(input) do |tmp, method_name|
       scrub_methods.fetch(method_name).call(tmp)
     end
-  end
-
-  LABELS_SCOPE = [:formeze, :labels].freeze
-
-  def self.translate(key, **options)
-    defined?(I18n) ? I18n.translate(key, **options) : options.fetch(:default)
   end
 
   def self.setup(form)
