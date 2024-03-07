@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require 'cgi'
 
 module Formeze
   autoload :Field, 'formeze/field'
   autoload :Form, 'formeze/form'
+  autoload :FormData, 'formeze/form_data'
   autoload :Presence, 'formeze/presence'
   autoload :Validation, 'formeze/validation'
 
@@ -35,20 +35,6 @@ module Formeze
 
   class ValidationError < StandardError; end
 
-  class RequestCGI < CGI
-    def env_table
-      @options[:request].env
-    end
-
-    def stdinput
-      @options[:request].body.tap do |body|
-        body.rewind if body.respond_to?(:rewind)
-      end
-    end
-  end
-
-  private_constant :RequestCGI
-
   RAILS_FORM_KEYS = %w[utf8 authenticity_token commit]
 
   private_constant :RAILS_FORM_KEYS
@@ -67,11 +53,7 @@ module Formeze
     end
 
     def parse(input)
-      form_data = if String === input
-        CGI.parse(input)
-      else
-        RequestCGI.new(request: input).params
-      end
+      form_data = FormData.parse(input)
 
       self.class.fields.each_value do |field|
         next unless field_defined?(field)
