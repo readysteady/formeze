@@ -38,5 +38,25 @@ RSpec.describe Formeze::Field do
         expect(subject.acceptable_file?(upload)).to eq(false)
       end
     end
+
+    context 'when content type is application/octet-stream' do
+      let(:upload) { double('Upload', content_type: 'application/octet-stream', original_filename: 'file.md') }
+
+      context 'when accept includes the first filename type' do
+        let(:subject) { described_class.new(:file, accept: 'text/markdown') }
+
+        it 'returns true' do
+          expect(subject.acceptable_file?(upload)).to eq(true)
+        end
+      end
+
+      context 'when accept does not include the first filename type' do
+        let(:subject) { described_class.new(:file, accept: 'text/plain') }
+
+        it 'returns true' do
+          expect(subject.acceptable_file?(upload)).to eq(false)
+        end
+      end
+    end
   end
 end
