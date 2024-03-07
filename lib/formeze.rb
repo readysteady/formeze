@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Formeze
+  autoload :Errors, 'formeze/errors'
   autoload :Field, 'formeze/field'
   autoload :Form, 'formeze/form'
   autoload :FormData, 'formeze/form_data'
@@ -90,7 +91,9 @@ module Formeze
       return self
     end
 
-    def add_error(field, message)
+    def add_error(field, message, default = nil)
+      message = Formeze::Errors.translate(message, default) unless default.nil?
+
       error = ValidationError.new("#{field.label} #{message}")
 
       errors << error
@@ -162,8 +165,6 @@ module Formeze
       scrub_methods.fetch(method_name).call(tmp)
     end
   end
-
-  ERRORS_SCOPE = [:formeze, :errors].freeze
 
   LABELS_SCOPE = [:formeze, :labels].freeze
 

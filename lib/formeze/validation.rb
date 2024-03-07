@@ -13,10 +13,6 @@ class Formeze::Validation
     @block = block
   end
 
-  def error_message
-    Formeze.translate(@error, scope: Formeze::ERRORS_SCOPE, default: 'is invalid')
-  end
-
   def validates?(form)
     @precondition ? form.instance_eval(&@precondition) : true
   end
@@ -37,7 +33,7 @@ class Formeze::Validation
         form.instance_eval(&@block)
       end
 
-      form.add_error(@field, error_message) unless return_value
+      form.add_error(@field, @error, 'is invalid') unless return_value
     end
   end
 end

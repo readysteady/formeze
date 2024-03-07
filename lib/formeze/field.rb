@@ -22,26 +22,26 @@ class Formeze::Field
       end
     end
 
-    form.add_error(self, error(:too_large, 'is too large')) if maxsize? && size > maxsize
+    form.add_error(self, :too_large, 'is too large') if maxsize? && size > maxsize
   end
 
   def validate(value, form)
     value = Formeze.scrub(value, @options[:scrub])
 
     if blank?(value)
-      form.add_error(self, error(:required, 'is required')) if required?
+      form.add_error(self, :required, 'is required') if required?
 
       value = blank_value if blank_value?
     else
-      form.add_error(self, error(:not_multiline, 'cannot contain newlines')) if !multiline? && value.lines.count > 1
+      form.add_error(self, :not_multiline, 'cannot contain newlines') if !multiline? && value.lines.count > 1
 
-      form.add_error(self, error(:too_long, 'is too long')) if too_long?(value)
+      form.add_error(self, :too_long, 'is too long') if too_long?(value)
 
-      form.add_error(self, error(:too_short, 'is too short')) if too_short?(value)
+      form.add_error(self, :too_short, 'is too short') if too_short?(value)
 
-      form.add_error(self, error(:no_match, 'is invalid')) if no_match?(value)
+      form.add_error(self, :no_match, 'is invalid') if no_match?(value)
 
-      form.add_error(self, error(:bad_value, 'is invalid')) if values? && !values.include?(value)
+      form.add_error(self, :bad_value, 'is invalid') if values? && !values.include?(value)
     end
 
     value = Array(form.send(name)).push(value) if multiple?
@@ -55,16 +55,12 @@ class Formeze::Field
     filename_type = MIME::Types.type_for(object.original_filename).first
 
     if type.nil? || type != filename_type || !accept.include?(type)
-      form.add_error(self, error(:not_accepted, 'is not an accepted file type'))
+      form.add_error(self, :not_accepted, 'is not an accepted file type')
     end
 
     object = Array(form.send(name)).push(object) if multiple?
 
     form.send(:"#{name}=", object)
-  end
-
-  def error(key, default)
-    Formeze.translate(key, scope: Formeze::ERRORS_SCOPE, default: default)
   end
 
   def key
