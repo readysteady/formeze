@@ -3,6 +3,7 @@ require 'cgi'
 
 module Formeze
   autoload :Field, 'formeze/field'
+  autoload :Form, 'formeze/form'
   autoload :Presence, 'formeze/presence'
   autoload :Validation, 'formeze/validation'
 
@@ -192,11 +193,5 @@ module Formeze
     form.send :include, InstanceMethods
 
     form.extend ClassMethods
-  end
-
-  class Form
-    def self.inherited(subclass)
-      Formeze.setup(subclass)
-    end
   end
 end
