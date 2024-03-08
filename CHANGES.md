@@ -1,3 +1,7 @@
+# 4.2.1
+
+* Fixed regression in v4.2.0 when mime-types gem is not loaded
+
 # 4.2.0
 
 * Fixed file validation for e.g. `.md` files sent as application/octet-stream
