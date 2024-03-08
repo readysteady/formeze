@@ -59,16 +59,14 @@ class Formeze::Field
     form.send(:"#{name}=", object)
   end
 
-  BINARY = MIME::Types['application/octet-stream'].first
-
   def acceptable_file?(object)
-    type = MIME::Types[object.content_type].first
-
     types = MIME::Types.type_for(object.original_filename)
 
-    if type == BINARY
+    if object.content_type == 'application/octet-stream'
       types.any? { |type| accept.include?(type) }
     else
+      type = MIME::Types[object.content_type].first
+
       accept.include?(type) && types.include?(type)
     end
   end
