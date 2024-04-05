@@ -714,6 +714,62 @@ RSpec.describe 'Form with validation block and if option' do
   end
 end
 
+RSpec.describe 'Form with multiple field and validation block' do
+  class FormWithMultipleOptionAndCustomValidation < Formeze::Form
+    field :path, multiple: true
+
+    validates :path do
+      path.all? { _1.start_with?('/') }
+    end
+  end
+
+  let(:form) { FormWithMultipleOptionAndCustomValidation.new }
+
+  context 'after parsing invalid input' do
+    before { form.parse('path=foo') }
+
+    describe '#valid?' do
+      it 'returns false' do
+        expect(form.valid?).to eq(false)
+      end
+    end
+
+    describe '#errors' do
+      it 'includes an error message for the field' do
+        expect(form.errors.map(&:to_s)).to include('Path is invalid')
+      end
+    end
+
+    describe '#errors_on?' do
+      it 'returns true when given the field name' do
+        expect(form.errors_on?(:path)).to eq(true)
+      end
+    end
+  end
+
+  context 'after parsing valid input' do
+    before { form.parse('path=%2Ffoo') }
+
+    describe '#valid?' do
+      it 'returns true' do
+        expect(form.valid?).to eq(true)
+      end
+    end
+
+    describe '#errors' do
+      it 'returns an empty array' do
+        expect(form.errors).to be_empty
+      end
+    end
+
+    describe '#errors_on?' do
+      it 'returns false when given the field name' do
+        expect(form.errors_on?(:path)).to eq(false)
+      end
+    end
+  end
+end
+
 RSpec.describe 'Form with optional field and validation block' do
   class FormWithOptionalFieldAndCustomValidation < Formeze::Form
     field :website, required: false
