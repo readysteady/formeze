@@ -17,4 +17,5 @@ Gem::Specification.new do |s|
     'bug_tracker_uri' => 'https://github.com/readysteady/formeze/issues',
     'changelog_uri' => 'https://github.com/readysteady/formeze/blob/main/CHANGES.md'
   }
+  s.add_dependency 'cgi'
 end
