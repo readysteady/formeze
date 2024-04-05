@@ -14,12 +14,16 @@ class Formeze::Field
 
     values.each do |value|
       if String === value
-        validate(value, form)
+        value = validate(value, form)
       else
-        validate_file(value, form)
+        form.add_error(self, :not_accepted, 'is not an accepted file type') unless acceptable_file?(value)
 
         size += value.size
       end
+
+      value = Array(form.send(name)).push(value) if multiple?
+
+      form.send(:"#{name}=", value)
     end
 
     form.add_error(self, :too_large, 'is too large') if maxsize? && size > maxsize
@@ -44,19 +48,7 @@ class Formeze::Field
       form.add_error(self, :bad_value, 'is invalid') if values? && !values.include?(value)
     end
 
-    value = Array(form.send(name)).push(value) if multiple?
-
-    form.send(:"#{name}=", value)
-  end
-
-  def validate_file(object, form)
-    unless acceptable_file?(object)
-      form.add_error(self, :not_accepted, 'is not an accepted file type')
-    end
-
-    object = Array(form.send(name)).push(object) if multiple?
-
-    form.send(:"#{name}=", object)
+    value
   end
 
   def acceptable_file?(object)
