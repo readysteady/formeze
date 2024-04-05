@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'formeze'
-  s.version = '4.2.1'
+  s.version = '4.3.0'
   s.license = 'LGPL-3.0'
   s.platform = Gem::Platform::RUBY
   s.authors = ['Tim Craft']

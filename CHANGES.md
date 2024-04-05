@@ -1,3 +1,11 @@
+# 4.3.0
+
+* Added dependency on cgi gem
+
+* Added support for lambda conditions without arguments
+
+* Fixed custom validation for fields with multiple values
+
 # 4.2.1
 
 * Fixed regression in v4.2.0 when mime-types gem is not loaded
