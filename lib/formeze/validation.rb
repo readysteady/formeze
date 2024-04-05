@@ -14,7 +14,7 @@ class Formeze::Validation
   end
 
   def validates?(form)
-    @precondition ? form.instance_eval(&@precondition) : true
+    @precondition ? Formeze::Condition.evaluate(form, @precondition) : true
   end
 
   def field_value?(form)

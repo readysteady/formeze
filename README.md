@@ -174,7 +174,7 @@ the `defined_if` or `defined_unless` options with a proc. Here's an example
 of using the defined_if option:
 
 ```ruby
-field :business_name, defined_if: proc { @account.business? }
+field :business_name, defined_if: ->{ @account.business? }
 ```
 
 In this example the `business_name` field will only be defined and validated
@@ -185,7 +185,7 @@ Here's an example of using the defined_unless option:
 ```ruby
 field :same_address, values: %w(true), key_required: false
 
-field :billing_address_line_one, defined_unless: proc { same_address? }
+field :billing_address_line_one, defined_unless: ->{ same_address? }
 
 def same_address?
   same_address == 'true'

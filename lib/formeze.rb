@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Formeze
+  autoload :Condition, 'formeze/condition'
   autoload :Errors, 'formeze/errors'
   autoload :Field, 'formeze/field'
   autoload :Form, 'formeze/form'
@@ -134,9 +135,9 @@ module Formeze
 
     def field_defined?(field)
       if field.defined_if?
-        instance_eval(&field.defined_if)
+        Formeze::Condition.evaluate(self, field.defined_if)
       elsif field.defined_unless?
-        !instance_eval(&field.defined_unless)
+        !Formeze::Condition.evaluate(self, field.defined_unless)
       else
         true
       end

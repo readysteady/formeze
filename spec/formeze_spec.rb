@@ -435,10 +435,10 @@ RSpec.describe 'Form with values option' do
   end
 end
 
-RSpec.describe 'Form with defined_if option' do
+RSpec.describe 'Form with defined_if lambda' do
   class FormWithGuardCondition < Formeze::Form
     field :account_name
-    field :account_vat_number, defined_if: proc { @business_account }
+    field :account_vat_number, defined_if: ->{ @business_account }
 
     def initialize(business_account)
       @business_account = business_account
@@ -476,7 +476,59 @@ RSpec.describe 'Form with defined_if option' do
   end
 end
 
-RSpec.describe 'Form with defined_unless option' do
+RSpec.describe 'Form with defined_unless lambda' do
+  class FormWithDefinedUnlessLambda < Formeze::Form
+    field :delivery_address
+    field :same_address, values: %w[yes no]
+    field :billing_address, defined_unless: ->{ same_address == 'yes' }
+  end
+
+  let(:form) { FormWithDefinedUnlessLambda.new }
+
+  describe '#parse' do
+    it 'raises an exception when there is an unexpected key' do
+      expect { form.parse('delivery_address=123+Main+St&same_address=yes&foo=bar') }.to raise_error(Formeze::KeyError)
+    end
+  end
+
+  context 'after parsing input with same_address set and no billing address' do
+    before { form.parse('delivery_address=123+Main+St&same_address=yes') }
+
+    describe '#valid?' do
+      it 'returns true' do
+        expect(form.valid?).to eq(true)
+      end
+    end
+  end
+end
+
+RSpec.describe 'Form with defined_unless proc' do
+  class FormWithDefinedUnlessProc < Formeze::Form
+    field :delivery_address
+    field :same_address, values: %w[yes no]
+    field :billing_address, defined_unless: proc { same_address == 'yes' }
+  end
+
+  let(:form) { FormWithDefinedUnlessProc.new }
+
+  describe '#parse' do
+    it 'raises an exception when there is an unexpected key' do
+      expect { form.parse('delivery_address=123+Main+St&same_address=yes&foo=bar') }.to raise_error(Formeze::KeyError)
+    end
+  end
+
+  context 'after parsing input with same_address set and no billing address' do
+    before { form.parse('delivery_address=123+Main+St&same_address=yes') }
+
+    describe '#valid?' do
+      it 'returns true' do
+        expect(form.valid?).to eq(true)
+      end
+    end
+  end
+end
+
+RSpec.describe 'Form with defined_unless symbol' do
   class FormWithHaltingCondition < Formeze::Form
     field :delivery_address
     field :same_address, values: %w[yes no]
