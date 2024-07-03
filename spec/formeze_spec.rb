@@ -857,17 +857,6 @@ RSpec.describe 'Form with maxsize option and accept option' do
 
   let(:form) { FormWithFileField.new }
 
-  def multipart_request(body)
-    env = Rack::MockRequest.env_for('/', {
-      'REQUEST_METHOD' => 'POST',
-      'CONTENT_TYPE' => 'multipart/form-data; boundary=AaB03x',
-      'CONTENT_LENGTH' => body.bytesize,
-      input: body
-    })
-
-    Rack::Request.new(env).tap(&:params)
-  end
-
   context 'after parsing multipart input' do
     before do
       body = <<~EOS.gsub(/\n/, "\r\n")
@@ -879,7 +868,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
         --AaB03x--
       EOS
 
-      form.parse(multipart_request(body))
+      form.parse(mock_request(body))
     end
 
     describe '#file' do
@@ -932,7 +921,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
         --AaB03x--
       EOS
 
-      form.parse(multipart_request(body))
+      form.parse(mock_request(body))
     end
 
     describe '#errors?' do
@@ -976,7 +965,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
         --AaB03x--
       EOS
 
-      form.parse(multipart_request(body))
+      form.parse(mock_request(body))
     end
 
     describe '#errors?' do
@@ -1020,7 +1009,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
         --AaB03x--
       EOS
 
-      form.parse(multipart_request(body))
+      form.parse(mock_request(body))
     end
 
     describe '#errors?' do
