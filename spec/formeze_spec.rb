@@ -1202,6 +1202,22 @@ RSpec.describe 'Form with accept option and multiple option' do
   end
 end
 
+RSpec.describe 'Form with fill option' do
+  class FormWithFillOption < Formeze::Form
+    field :title, fill: ->(string) { string.upcase }
+  end
+
+  let(:form) { FormWithFillOption.new }
+
+  describe '#fill' do
+    it 'uses the proc specified by the fill option' do
+      form.fill('title')
+
+      expect(form.title).to eq('TITLE')
+    end
+  end
+end
+
 RSpec.describe 'Form with scrub option' do
   class FormWithScrubbedFields < Formeze::Form
     field :postcode, scrub: [:strip, :squeeze, :upcase], pattern: /\A[A-Z0-9]{2,4} [A-Z0-9]{3}\z/

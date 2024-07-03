@@ -51,7 +51,9 @@ module Formeze
   module InstanceMethods
     def fill(object)
       self.class.fields.each_value do |field|
-        if Hash === object && object.key?(field.name)
+        if field.fill_proc?
+          send(:"#{field.name}=", Formeze::Condition.evaluate(object, field.fill_proc))
+        elsif Hash === object && object.key?(field.name)
           send(:"#{field.name}=", object[field.name])
         elsif object.respond_to?(field.name)
           send(:"#{field.name}=", object.send(field.name))

@@ -152,4 +152,12 @@ class Formeze::Field
       false
     end
   end
+
+  def fill_proc?
+    @options.key?(:fill)
+  end
+
+  def fill_proc
+    @options[:fill]
+  end
 end
