@@ -77,7 +77,7 @@ module Formeze
 
         if values.is_a?(Array)
           if values.length > 1
-            raise ValueError unless field.multiple?
+            raise ValueError, "multiple values for #{field.key} field" unless field.multiple?
           end
 
           field.validate_all(values, self)

@@ -33,7 +33,9 @@ RSpec.describe 'Form with field' do
     end
 
     it 'raises an exception when there are multiple values for the key' do
-      expect { form.parse('title=foo&title=bar') }.to raise_error(Formeze::ValueError)
+      expect { form.parse('title=foo&title=bar') }.to raise_error(Formeze::ValueError) { |exception|
+        expect(exception.message).to eq('multiple values for title field')
+      }
     end
 
     it 'raises an exception when the data contains unexpected keys' do
