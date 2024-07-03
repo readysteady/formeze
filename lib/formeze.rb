@@ -48,10 +48,6 @@ module Formeze
     end
   end
 
-  RAILS_FORM_KEYS = %w[utf8 authenticity_token commit]
-
-  private_constant :RAILS_FORM_KEYS
-
   module InstanceMethods
     def fill(object)
       self.class.fields.each_value do |field|
@@ -91,9 +87,9 @@ module Formeze
       end
 
       if defined?(Rails)
-        RAILS_FORM_KEYS.each do |key|
-          form_data.delete(key)
-        end
+        form_data.delete('authenticity_token')
+        form_data.delete('commit')
+        form_data.delete('utf8')
       end
 
       unless form_data.empty?
