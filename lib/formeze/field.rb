@@ -146,4 +146,14 @@ class Formeze::Field
   def defined_unless
     @options.fetch(:defined_unless)
   end
+
+  def undefined?(form)
+    if defined_if?
+      !Formeze::Condition.evaluate(form, defined_if)
+    elsif defined_unless?
+      Formeze::Condition.evaluate(form, defined_unless)
+    else
+      false
+    end
+  end
 end

@@ -59,7 +59,7 @@ module Formeze
       form_data = FormData.parse(input)
 
       self.class.fields.each_value do |field|
-        next unless field_defined?(field)
+        next if field.undefined?(self)
 
         unless form_data.key?(field.key)
           next if field.multiple? || !field.key_required?
@@ -136,16 +136,6 @@ module Formeze
     alias_method :to_hash, :to_h
 
     private
-
-    def field_defined?(field)
-      if field.defined_if?
-        Formeze::Condition.evaluate(self, field.defined_if)
-      elsif field.defined_unless?
-        !Formeze::Condition.evaluate(self, field.defined_unless)
-      else
-        true
-      end
-    end
 
     def field_errors
       @field_errors ||= Hash.new { |h, k| h[k] = [] }
