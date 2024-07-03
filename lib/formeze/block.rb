@@ -1,4 +1,4 @@
-module Formeze::Condition
+module Formeze::Block
   def self.evaluate(instance, block)
     block = block.to_proc
 

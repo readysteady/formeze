@@ -145,9 +145,9 @@ class Formeze::Field
 
   def undefined?(form)
     if defined_if?
-      !Formeze::Condition.evaluate(form, defined_if)
+      !Formeze::Block.evaluate(form, defined_if)
     elsif defined_unless?
-      Formeze::Condition.evaluate(form, defined_unless)
+      Formeze::Block.evaluate(form, defined_unless)
     else
       false
     end

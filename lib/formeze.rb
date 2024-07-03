@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Formeze
-  autoload :Condition, 'formeze/condition'
+  autoload :Block, 'formeze/block'
   autoload :Errors, 'formeze/errors'
   autoload :Field, 'formeze/field'
   autoload :Form, 'formeze/form'
@@ -52,7 +52,7 @@ module Formeze
     def fill(object)
       self.class.fields.each_value do |field|
         if field.fill_proc?
-          send(:"#{field.name}=", Formeze::Condition.evaluate(object, field.fill_proc))
+          send(:"#{field.name}=", Formeze::Block.evaluate(object, field.fill_proc))
         elsif Hash === object && object.key?(field.name)
           send(:"#{field.name}=", object[field.name])
         elsif object.respond_to?(field.name)
