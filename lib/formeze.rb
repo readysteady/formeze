@@ -36,7 +36,17 @@ module Formeze
 
   class ValueError < StandardError; end
 
-  class ValidationError < StandardError; end
+  class ValidationError < StandardError
+    def initialize(field, message)
+      @field = field
+
+      super("#{field.label} #{message}")
+    end
+
+    def field_name
+      @field.name
+    end
+  end
 
   RAILS_FORM_KEYS = %w[utf8 authenticity_token commit]
 
@@ -100,11 +110,7 @@ module Formeze
     def add_error(field, message, default = nil)
       message = Formeze::Errors.translate(message, default) unless default.nil?
 
-      error = ValidationError.new("#{field.label} #{message}")
-
-      errors << error
-
-      field_errors[field.name] << error
+      errors << ValidationError.new(field, message)
     end
 
     def valid?
@@ -120,11 +126,11 @@ module Formeze
     end
 
     def errors_on?(field_name)
-      field_errors[field_name].size > 0
+      errors.any? { |error| error.field_name == field_name }
     end
 
     def errors_on(field_name)
-      field_errors[field_name]
+      errors.select { |error| error.field_name == field_name }
     end
 
     def to_h
@@ -134,12 +140,6 @@ module Formeze
     end
 
     alias_method :to_hash, :to_h
-
-    private
-
-    def field_errors
-      @field_errors ||= Hash.new { |h, k| h[k] = [] }
-    end
   end
 
   def self.label(field_name)
