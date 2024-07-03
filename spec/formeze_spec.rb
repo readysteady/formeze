@@ -153,9 +153,7 @@ RSpec.describe 'Form with field' do
 
     describe '#errors' do
       it 'returns an array containing a single error message' do
-        expect(form.errors).to be_instance_of(Array)
-        expect(form.errors.length).to eq(1)
-        expect(form.errors.first.to_s).to eq('Title is required')
+        expect(form.errors.map(&:to_s)).to eq(['Title is required'])
       end
     end
 
@@ -167,11 +165,7 @@ RSpec.describe 'Form with field' do
 
     describe '#errors_on' do
       it 'returns an array containing a single error message when given the title field name' do
-        errors = form.errors_on(:title)
-
-        expect(errors).to be_instance_of(Array)
-        expect(errors.length).to eq(1)
-        expect(errors.first.to_s).to eq('Title is required')
+        expect(form.errors_on(:title).map(&:to_s)).to eq(['Title is required'])
       end
     end
   end
@@ -940,9 +934,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
 
     describe '#errors' do
       it 'returns an array containing a single error message' do
-        expect(form.errors).to be_instance_of(Array)
-        expect(form.errors.length).to eq(1)
-        expect(form.errors.first.to_s).to eq('File is required')
+        expect(form.errors.map(&:to_s)).to eq(['File is required'])
       end
     end
 
@@ -954,10 +946,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
 
     describe '#errors_on' do
       it 'returns an array containing a single error message when given the file field name' do
-        errors = form.errors_on(:file)
-        expect(errors).to be_instance_of(Array)
-        expect(errors.length).to eq(1)
-        expect(errors.first.to_s).to eq('File is required')
+        expect(form.errors_on(:file).map(&:to_s)).to eq(['File is required'])
       end
     end
   end
@@ -984,9 +973,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
 
     describe '#errors' do
       it 'returns an array containing a single error message' do
-        expect(form.errors).to be_instance_of(Array)
-        expect(form.errors.length).to eq(1)
-        expect(form.errors.first.to_s).to eq('File is too large')
+        expect(form.errors.map(&:to_s)).to eq(['File is too large'])
       end
     end
 
@@ -998,10 +985,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
 
     describe '#errors_on' do
       it 'returns an array containing a single error message when given the file field name' do
-        errors = form.errors_on(:file)
-        expect(errors).to be_instance_of(Array)
-        expect(errors.length).to eq(1)
-        expect(errors.first.to_s).to eq('File is too large')
+        expect(form.errors_on(:file).map(&:to_s)).to eq(['File is too large'])
       end
     end
   end
@@ -1028,9 +1012,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
 
     describe '#errors' do
       it 'returns an array containing a single error message' do
-        expect(form.errors).to be_instance_of(Array)
-        expect(form.errors.length).to eq(1)
-        expect(form.errors.first.to_s).to eq('File is not an accepted file type')
+        expect(form.errors.map(&:to_s)).to eq(['File is not an accepted file type'])
       end
     end
 
@@ -1042,10 +1024,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
 
     describe '#errors_on' do
       it 'returns an array containing a single error message when given the file field name' do
-        errors = form.errors_on(:file)
-        expect(errors).to be_instance_of(Array)
-        expect(errors.length).to eq(1)
-        expect(errors.first.to_s).to eq('File is not an accepted file type')
+        expect(form.errors_on(:file).map(&:to_s)).to eq(['File is not an accepted file type'])
       end
     end
   end
