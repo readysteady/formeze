@@ -18,5 +18,4 @@ Gem::Specification.new do |s|
     'changelog_uri' => 'https://github.com/readysteady/formeze/blob/main/CHANGES.md'
   }
   s.add_dependency 'rack', '~> 3'
-  s.add_dependency 'cgi'
 end
