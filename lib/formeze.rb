@@ -64,16 +64,20 @@ module Formeze
         unless form_data.key?(field.key)
           next if field.multiple? || !field.key_required?
 
-          raise KeyError, "missing form key: #{field.key}"
+          raise KeyError, "missing form key: #{field.key}" unless field.accept?
         end
 
         values = form_data.delete(field.key)
 
-        if values.length > 1
-          raise ValueError unless field.multiple?
-        end
+        if values.is_a?(Array)
+          if values.length > 1
+            raise ValueError unless field.multiple?
+          end
 
-        field.validate_all(values, self)
+          field.validate_all(values, self)
+        else
+          field.validate(values, self)
+        end
       end
 
       if defined?(Rails)

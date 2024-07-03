@@ -95,6 +95,10 @@ class Formeze::Field
     @options.fetch(:maxsize)
   end
 
+  def accept?
+    @options.key?(:accept)
+  end
+
   def accept
     @accept ||= @options.fetch(:accept).split(',').flat_map { |type| MIME::Types[type] }
   end

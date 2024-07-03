@@ -1,4 +1,4 @@
-require_relative '../../lib/formeze'
+require 'spec_helper'
 
 RSpec.describe Formeze::Presence do
   include described_class

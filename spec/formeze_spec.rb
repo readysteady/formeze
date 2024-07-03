@@ -1,10 +1,4 @@
-require_relative '../lib/formeze'
-require 'i18n'
-require 'mime-types'
-require 'rack'
-
-I18n.available_locales = [:en]
-I18n.backend = I18n::Backend::Simple.new
+require 'spec_helper'
 
 RSpec.describe 'Form with field' do
   class FormWithField < Formeze::Form
@@ -744,7 +738,7 @@ RSpec.describe 'Form with validation block and if option' do
   end
 
   context 'after parsing invalid input' do
-    before { form.parse('minimum_spend=0.00&fixed_discount=10%') }
+    before { form.parse('minimum_spend=0.00&fixed_discount=10%25') }
 
     describe '#valid?' do
       it 'returns false' do
@@ -890,8 +884,9 @@ RSpec.describe 'Form with maxsize option and accept option' do
 
     describe '#file' do
       it 'returns the value of the field' do
-        expect(form.file).to be_instance_of(StringIO)
+        expect(form.file).to be_instance_of(Rack::Multipart::UploadedFile)
         expect(form.file.original_filename).to eq('example.txt')
+        expect(form.file.content_type).to eq('text/plain')
       end
     end
 
@@ -1054,6 +1049,157 @@ RSpec.describe 'Form with maxsize option and accept option' do
         expect(errors).to be_instance_of(Array)
         expect(errors.length).to eq(1)
         expect(errors.first.to_s).to eq('File is not an accepted file type')
+      end
+    end
+  end
+end
+
+RSpec.describe 'Form with accept option and multiple option' do
+  class FormWithMultipleFileField < Formeze::Form
+    field :file, accept: 'text/plain', multiple: true
+  end
+
+  let(:form) { FormWithMultipleFileField.new }
+
+  context 'after parsing multipart input with no files' do
+    before do
+      body = <<~EOS.gsub(/\n/, "\r\n")
+        --AaB03x
+        Content-Disposition: form-data; name="file"; filename=""
+        Content-Type: application/octet-stream
+
+
+        --AaB03x
+        Content-Disposition: form-data; name="file"; filename=""
+        Content-Type: application/octet-stream
+
+
+        --AaB03x--
+      EOS
+
+      form.parse(mock_request(body))
+    end
+
+    describe '#file' do
+      it 'returns nil' do
+        expect(form.file).to be_nil
+      end
+    end
+
+    describe '#valid?' do
+      it 'returns true' do
+        expect(form.valid?).to eq(true)
+      end
+    end
+
+    describe '#errors?' do
+      it 'returns false' do
+        expect(form.errors?).to eq(false)
+      end
+    end
+
+    describe '#errors' do
+      it 'returns an empty array' do
+        expect(form.errors).to eq([])
+      end
+    end
+  end
+
+  context 'after parsing multipart input with one file' do
+    before do
+      body = <<~EOS.gsub(/\n/, "\r\n")
+        --AaB03x
+        Content-Disposition: form-data; name="file"; filename="file1.txt"
+        Content-Type: text/plain
+
+        1
+        --AaB03x
+        Content-Disposition: form-data; name="file"; filename=""
+        Content-Type: application/octet-stream
+
+
+        --AaB03x--
+      EOS
+
+      form.parse(mock_request(body))
+    end
+
+    describe '#file' do
+      it 'returns an array' do
+        expect(form.file).to be_an(Array)
+        expect(form.file.length).to eq(1)
+        expect(form.file[0]).to be_a(Rack::Multipart::UploadedFile)
+        expect(form.file[0].original_filename).to eq('file1.txt')
+        expect(form.file[0].content_type).to eq('text/plain')
+      end
+    end
+
+    describe '#valid?' do
+      it 'returns true' do
+        expect(form.valid?).to eq(true)
+      end
+    end
+
+    describe '#errors?' do
+      it 'returns false' do
+        expect(form.errors?).to eq(false)
+      end
+    end
+
+    describe '#errors' do
+      it 'returns an empty array' do
+        expect(form.errors).to eq([])
+      end
+    end
+  end
+
+  context 'after parsing multipart input with multiple files' do
+    before do
+      body = <<~EOS.gsub(/\n/, "\r\n")
+        --AaB03x
+        Content-Disposition: form-data; name="file"; filename="file1.txt"
+        Content-Type: text/plain
+
+        1
+        --AaB03x
+        Content-Disposition: form-data; name="file"; filename="file2.txt"
+        Content-Type: text/plain
+
+        2
+        --AaB03x--
+      EOS
+
+      form.parse(mock_request(body))
+    end
+
+    describe '#file' do
+      it 'returns an array' do
+        expect(form.file).to be_an(Array)
+        expect(form.file.length).to eq(2)
+        expect(form.file[0]).to be_a(Rack::Multipart::UploadedFile)
+        expect(form.file[0].original_filename).to eq('file1.txt')
+        expect(form.file[0].content_type).to eq('text/plain')
+        expect(form.file[1]).to be_a(Rack::Multipart::UploadedFile)
+        expect(form.file[1].original_filename).to eq('file2.txt')
+        expect(form.file[1].content_type).to eq('text/plain')
+      end
+    end
+
+    describe '#valid?' do
+      it 'returns true' do
+        expect(form.valid?).to eq(true)
+      end
+    end
+
+    describe '#errors?' do
+      it 'returns false' do
+        expect(form.errors?).to eq(false)
+      end
+    end
+
+    describe '#errors' do
+      it 'returns an empty array' do
+        expect(form.errors).to eq([])
       end
     end
   end

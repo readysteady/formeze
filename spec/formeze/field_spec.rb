@@ -1,5 +1,4 @@
-require_relative '../../lib/formeze'
-require 'mime-types'
+require 'spec_helper'
 
 RSpec.describe Formeze::Field do
   describe '#acceptable_file?' do
