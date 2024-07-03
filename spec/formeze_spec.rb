@@ -227,6 +227,12 @@ RSpec.describe 'Form with optional field' do
   context 'after parsing blank input' do
     before { form.parse('title=') }
 
+    describe '#title' do
+      it 'returns nil' do
+        expect(form.title).to be_nil
+      end
+    end
+
     describe '#valid?' do
       it 'returns true' do
         expect(form.valid?).to eq(true)

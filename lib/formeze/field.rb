@@ -35,7 +35,7 @@ class Formeze::Field
     if blank?(value)
       form.add_error(self, :required, 'is required') if required?
 
-      value = blank_value if blank_value?
+      value = blank_value
     else
       form.add_error(self, :not_multiline, 'cannot contain newlines') if !multiline? && value.lines.count > 1
 
@@ -115,12 +115,8 @@ class Formeze::Field
     @options.key?(:pattern) && value !~ @options[:pattern]
   end
 
-  def blank_value?
-    @options.key?(:blank)
-  end
-
   def blank_value
-    @options.fetch(:blank)
+    @options[:blank]
   end
 
   def values?
