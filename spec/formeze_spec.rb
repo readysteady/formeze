@@ -57,14 +57,14 @@ RSpec.describe 'Form with field' do
         expect(form).not_to respond_to(:utf8)
         expect(form).not_to respond_to(:authenticity_token)
         expect(form).not_to respond_to(:commit)
-        expect(form.to_hash).to eq({:title => 'Test'})
+        expect(form.to_hash).to eq({title: 'Test'})
       end
     end
   end
 
   describe '#fill' do
     it 'sets the value of the title attribute when given a hash with symbol keys' do
-      form.fill({:title => 'Untitled'})
+      form.fill({title: 'Untitled'})
 
       expect(form.title).to eq('Untitled')
     end
@@ -80,7 +80,7 @@ RSpec.describe 'Form with field' do
     end
 
     it 'returns itself' do
-      expect(form.fill({:title => 'Untitled'})).to eq(form)
+      expect(form.fill({title: 'Untitled'})).to eq(form)
     end
   end
 
@@ -125,13 +125,13 @@ RSpec.describe 'Form with field' do
 
     describe '#to_h' do
       it 'returns a hash containing the field name and its value' do
-        expect(form.to_h).to eq({:title => 'Untitled'})
+        expect(form.to_h).to eq({title: 'Untitled'})
       end
     end
 
     describe '#to_hash' do
       it 'returns a hash containing the field name and its value' do
-        expect(form.to_hash).to eq({:title => 'Untitled'})
+        expect(form.to_hash).to eq({title: 'Untitled'})
       end
     end
   end
@@ -181,7 +181,7 @@ RSpec.describe 'Form with field' do
   end
 
   context 'with an errors translation' do
-    before { I18n.backend.store_translations :en, {:formeze => {:errors => {:required => 'cannot be blank'}}} }
+    before { I18n.backend.store_translations :en, {formeze: {errors: {required: 'cannot be blank'}}} }
 
     after { I18n.reload! }
 
@@ -197,7 +197,7 @@ RSpec.describe 'Form with field' do
   end
 
   context 'with a labels translation' do
-    before { I18n.backend.store_translations :en, {:formeze => {:labels => {:title => 'TITLE'}}} }
+    before { I18n.backend.store_translations :en, {formeze: {labels: {title: 'TITLE'}}} }
 
     after { I18n.reload! }
 
@@ -417,7 +417,7 @@ RSpec.describe 'Form with multiple option' do
 
     describe '#to_hash' do
       it 'returns a hash containing the field name and its array value' do
-        expect(form.to_hash).to eq({:colour => %w[black white]})
+        expect(form.to_hash).to eq({colour: %w[black white]})
       end
     end
   end
@@ -660,7 +660,7 @@ RSpec.describe 'Form with validation block' do
   end
 
   context 'with an errors translation' do
-    before { I18n.backend.store_translations :en, {:formeze => {:errors => {:invalid => 'is not valid'}}} }
+    before { I18n.backend.store_translations :en, {formeze: {errors: {invalid: 'is not valid'}}} }
 
     after { I18n.reload! }
 
@@ -711,7 +711,7 @@ RSpec.describe 'Form with validation block and error option' do
   end
 
   context 'with an errors translation' do
-    before { I18n.backend.store_translations :en, {:formeze => {:errors => {:does_not_match => 'does not match'}}} }
+    before { I18n.backend.store_translations :en, {formeze: {errors: {does_not_match: 'does not match'}}} }
 
     after { I18n.reload! }
 

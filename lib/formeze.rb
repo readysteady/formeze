@@ -146,11 +146,11 @@ module Formeze
 
   def self.scrub_methods
     @scrub_methods ||= {
-      :strip => :strip.to_proc,
-      :upcase => :upcase.to_proc,
-      :downcase => :downcase.to_proc,
-      :squeeze => proc { |string| string.squeeze(' ') },
-      :squeeze_lines => proc { |string| string.gsub(/(\r?\n)(\r?\n)(\r?\n)+/, '\\1\\2') }
+      strip: :strip.to_proc,
+      upcase: :upcase.to_proc,
+      downcase: :downcase.to_proc,
+      squeeze: proc { |string| string.squeeze(' ') },
+      squeeze_lines: proc { |string| string.gsub(/(\r?\n)(\r?\n)(\r?\n)+/, '\\1\\2') }
     }
   end
 
