@@ -16,7 +16,7 @@ class Formeze::Field
       if String === value
         value = validate(value, form)
       else
-        form.add_error(self, :not_accepted, 'is not an accepted file type') unless acceptable_file?(value)
+        form.add_error(self, :not_accepted) unless acceptable_file?(value)
 
         size += value.size
       end
@@ -26,26 +26,26 @@ class Formeze::Field
       form.send(:"#{name}=", value)
     end
 
-    form.add_error(self, :too_large, 'is too large') if maxsize? && size > maxsize
+    form.add_error(self, :too_large) if maxsize? && size > maxsize
   end
 
   def validate(value, form)
     value = Formeze.scrub(value, @options[:scrub])
 
     if blank?(value)
-      form.add_error(self, :required, 'is required') if required?
+      form.add_error(self, :required) if required?
 
       value = blank_value
     else
-      form.add_error(self, :not_multiline, 'cannot contain newlines') if !multiline? && value.lines.count > 1
+      form.add_error(self, :not_multiline) if !multiline? && value.lines.count > 1
 
-      form.add_error(self, :too_long, 'is too long') if too_long?(value)
+      form.add_error(self, :too_long) if too_long?(value)
 
-      form.add_error(self, :too_short, 'is too short') if too_short?(value)
+      form.add_error(self, :too_short) if too_short?(value)
 
-      form.add_error(self, :no_match, 'is invalid') if no_match?(value)
+      form.add_error(self, :no_match) if no_match?(value)
 
-      form.add_error(self, :bad_value, 'is invalid') if values? && !values.include?(value)
+      form.add_error(self, :bad_value) if values? && !values.include?(value)
     end
 
     value

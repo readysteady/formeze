@@ -105,8 +105,8 @@ module Formeze
       return self
     end
 
-    def add_error(field, message, default = nil)
-      message = Formeze::Errors.translate(message, default) unless default.nil?
+    def add_error(field, error)
+      message = Formeze::Errors.translate(error)
 
       errors << ValidationError.new(field, message)
     end

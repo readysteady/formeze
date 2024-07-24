@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Formeze::Validation
   include Formeze::Presence
 
@@ -33,7 +31,7 @@ class Formeze::Validation
         form.instance_eval(&@block)
       end
 
-      form.add_error(@field, @error, 'is invalid') unless return_value
+      form.add_error(@field, @error) unless return_value
     end
   end
 end
