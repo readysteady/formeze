@@ -3,19 +3,19 @@
 ![Gem Version](https://badge.fury.io/rb/formeze.svg)
 ![Test Status](https://github.com/readysteady/formeze/actions/workflows/test.yml/badge.svg)
 
-Ruby gem for validating form data.
+Ruby gem for parsing and validating form data.
 
 
 ## Motivation
 
-Most web apps built for end users will need to process url-encoded form data.
+Most web applications built for end users will need to process form data.
 Registration forms, profile forms, checkout forms, contact forms, and forms
 for adding/editing application specific data.
 
-As developers we would like to process this data safely, to minimise the
-possibility of security holes within our application that could be exploited.
-Formeze adopts the approach of being "strict by default", forcing the application
-code to be explicit in what it accepts as input.
+With formeze you can define form objects that explicitly define what your
+application expects as input. This is more secure, and leads to much better
+separation of responsibilities, and also allows for implementing different
+validation rules in different contexts.
 
 
 ## Install
@@ -53,7 +53,8 @@ else
 end
 ```
 
-Formeze will automatically ignore the Rails "utf8" and "authenticity_token" parameters.
+Formeze will automatically ignore the Rails "authenticity_token", "commit",
+and "utf8" parameters.
 
 If you prefer not to inherit from the `Formeze::Form` class then you can
 instead call the `Formeze.setup` method on your classes like this:
@@ -89,9 +90,9 @@ messages specific to a single field.
 
 ## Field options
 
-By default fields cannot be blank, they are limited to 64 characters,
-and they cannot contain newlines. These restrictions can be overridden
-by setting various field options.
+By default fields are required (i.e. they cannot be blank), they are limited
+to 64 characters, and they cannot contain newlines. These restrictions can be
+overridden by setting various field options.
 
 Defining a field without any options works well for a simple text input.
 If the default length limit is too big or too small you can override it
@@ -101,11 +102,14 @@ by setting the `maxlength` option. For example:
 field :title, maxlength: 200
 ```
 
-Similarly there is a `minlength` option for validating fields that should
-have a minimum number of characters (e.g. passwords).
+Similarly there is a `minlength` option for defining a minimum length:
+
+```ruby
+field :password, minlength: 8
+```
 
 Fields are required by default. Specify the `required` option if the field
-is not required, i.e. the value of the field can be blank/empty. For example:
+is optional. For example:
 
 ```ruby
 field :title, required: false
@@ -308,11 +312,11 @@ would include the value of the `formeze.errors.does_not_match` I18n key.
 
 ## I18n integration
 
-Formeze integrates with [I18n](http://edgeguides.rubyonrails.org/i18n.html)
+Formeze integrates with the [i18n gem](https://rubygems.org/gems/i18n)
 so that you can define custom error messages and field labels within your
 locales (useful both for localization, and when working with designers).
-For example, here is how you would change the "required" error message
-(which defaults to "is required"):
+
+Here is an example of how you would change the "required" error message:
 
 ```yaml
 # config/locales/en.yml
@@ -322,8 +326,20 @@ en:
       required: "cannot be blank"
 ```
 
-And here is an example of how you would set a custom label for fields named
-"first_name" (for which the default label would be "First name"):
+Error messages defined in this way apply globally to all Formeze forms.
+
+You can also change error messages on a per field basis, for example:
+
+```yaml
+# config/locales/en.yml
+en:
+  ExampleForm:
+    errors:
+      comments:
+        required: 'are required'
+```
+
+Here is an example of how to define a custom label for "first_name" fields:
 
 ```yaml
 # config/locales/en.yml
