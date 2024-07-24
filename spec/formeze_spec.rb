@@ -213,6 +213,32 @@ RSpec.describe 'Form with field' do
   end
 end
 
+RSpec.describe 'Form with fields' do
+  class FormWithFields < Formeze::Form
+    field :title
+    field :steps
+  end
+
+  let(:form) { FormWithFields.new }
+
+  context 'with a field specific errors translation' do
+    before { I18n.backend.store_translations :en, {'FormWithFields' => {errors: {steps: {required: 'are required'}}}} }
+
+    after { I18n.reload! }
+
+    context 'after parsing blank input' do
+      before { form.parse('title=&steps=') }
+
+      describe '#errors' do
+        it 'uses the translation' do
+          expect(form.errors.map(&:to_s)).to include('Title is required')
+          expect(form.errors.map(&:to_s)).to include('Steps are required')
+        end
+      end
+    end
+  end
+end
+
 RSpec.describe 'Form with optional field' do
   class FormWithOptionalField < Formeze::Form
     field :title, required: false

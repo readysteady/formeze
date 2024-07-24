@@ -106,7 +106,7 @@ module Formeze
     end
 
     def add_error(field, error)
-      message = Formeze::Errors.translate(error)
+      message = Formeze::Errors.translate(error, scope: "#{self.class.name}.errors.#{field.name}")
 
       errors << ValidationError.new(field, message)
     end

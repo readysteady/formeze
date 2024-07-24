@@ -14,13 +14,13 @@ module Formeze::Errors
     too_short: 'is too short',
   }
 
-  def self.translate(error)
+  def self.translate(error, scope:)
     default = DEFAULT[error] || 'is invalid'
 
-    if defined?(I18n)
-      return I18n.translate(error, scope: SCOPE, default: default)
-    end
+    return default unless defined?(I18n)
 
-    default
+    message = I18n.translate(error, scope: scope, default: nil)
+
+    message || I18n.translate(error, scope: SCOPE, default: default)
   end
 end
