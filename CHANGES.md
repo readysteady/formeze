@@ -1,3 +1,31 @@
+# 5.0.0
+
+* Added a `fill` field option to specify how to fill a field. For example:
+
+      class ExampleForm < Formeze::Form
+        field :year, required: false, fill: ->{ _1.date&.year }
+      end
+
+* Added functionality for defining field specific error messages via i18n.
+
+  Add translations to your locale files like this:
+
+      ExampleForm:
+        errors:
+          comments:
+            required: 'are required'
+
+* Removed support for older rubies. **Required ruby version is now 3.0.0**
+
+* Changed from cgi to rack for parsing form data, adding support for parsing
+  requests with different methods e.g. PUT and PATCH instead of just POST.
+
+  Whilst this should largely be backwards compatible there are some differences,
+  for example uploaded files will be instances of `Rack::Multipart::UploadedFile`
+  instead of `StringIO` instances as they were before.
+
+* Changed the default blank value to `nil`
+
 # 4.3.0
 
 * Added dependency on cgi gem
