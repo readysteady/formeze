@@ -1023,7 +1023,7 @@ RSpec.describe 'Form with maxsize option and accept option' do
         Content-Disposition: form-data; name="file"; filename="example.html"
         Content-Type: text/html
 
-        <!DOCTYPE html> 
+        <!DOCTYPE html>
         --AaB03x--
       EOS
 
