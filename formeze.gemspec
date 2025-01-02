@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.license = 'LGPL-3.0'
   s.platform = Gem::Platform::RUBY
   s.authors = ['Tim Craft']
-  s.email = ['mail@timcraft.com']
+  s.email = ['email@timcraft.com']
   s.homepage = 'https://github.com/readysteady/formeze'
   s.description = 'Ruby gem for parsing and validating form data'
   s.summary = 'See description'
