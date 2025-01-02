@@ -48,17 +48,11 @@ RSpec.describe 'Form with field' do
       expect(form.parse('title=Untitled')).to eq(form)
     end
 
-    context 'with rails' do
-      before { Object.const_set(:Rails, Object.new) }
+    it 'ignores keys in Formeze.exclude' do
+      form.parse('_method=patch&title=Test')
 
-      it 'silently ignores the utf8, commit and authenticity_token parameters' do
-        form.parse('utf8=%E2%9C%93&authenticity_token=5RMc3sPZdR%2BZz4onNS8NfK&title=Test&commit=Create')
-
-        expect(form).not_to respond_to(:utf8)
-        expect(form).not_to respond_to(:authenticity_token)
-        expect(form).not_to respond_to(:commit)
-        expect(form.to_hash).to eq({title: 'Test'})
-      end
+      expect(form).not_to respond_to(:_method)
+      expect(form.to_hash).to eq({title: 'Test'})
     end
   end
 

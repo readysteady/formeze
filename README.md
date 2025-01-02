@@ -53,8 +53,9 @@ else
 end
 ```
 
-Formeze will automatically ignore the Rails "authenticity_token", "commit",
-and "utf8" parameters.
+Formeze will exclude any parameters defined in `Formeze.exclude`, which by
+default includes framework defined parameters like `_method`, `authenticity_token`,
+`commit`, and `utf8`.
 
 If you prefer not to inherit from the `Formeze::Form` class then you can
 instead call the `Formeze.setup` method on your classes like this:

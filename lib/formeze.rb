@@ -88,10 +88,8 @@ module Formeze
         end
       end
 
-      if defined?(Rails)
-        form_data.delete('authenticity_token')
-        form_data.delete('commit')
-        form_data.delete('utf8')
+      Formeze.exclude.each do |key|
+        form_data.delete(key)
       end
 
       unless form_data.empty?
@@ -138,6 +136,16 @@ module Formeze
     end
 
     alias_method :to_hash, :to_h
+  end
+
+  class << self
+    attr_accessor :exclude
+  end
+
+  if defined?(Rails)
+    self.exclude = %w[_method authenticity_token commit utf8]
+  else
+    self.exclude = %w[_method _csrf]
   end
 
   def self.label(field_name)
