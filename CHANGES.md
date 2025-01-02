@@ -1,3 +1,7 @@
+# 5.1.0
+
+* Added `Formeze.exclude` attribute to configure which parameters are excluded
+
 # 5.0.0
 
 * Added a `fill` field option to specify how to fill a field. For example:
