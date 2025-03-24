@@ -222,7 +222,7 @@ For file fields you can specify the `accept` and `maxsize` options, for example:
 
 ```ruby
 class ExampleForm < Formeze::Form
-  field :image, accept: 'image/jpg,image/png', maxsize: 1000
+  field :image, accept: 'image/jpeg,image/png', maxsize: 1000
 end
 ```
 

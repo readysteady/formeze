@@ -79,7 +79,7 @@
 * Added functionality for handling multipart form data. For example:
 
       class ExampleForm < Formeze::Form
-        field :image, accept: 'image/jpg,image/png', maxsize: 1000
+        field :image, accept: 'image/jpeg,image/png', maxsize: 1000
       end
 
   For this to work the request needs to be passed to the parse method:
